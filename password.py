@@ -147,7 +147,7 @@ def newKey():
 
 def keyValid(key):
     '''Return True if key is in database and is not expired. Updates timestamp if key is valid.'''
-    if key == '':
+    if not key:
         return False
     now = nowUnixInt()
     exp_date = now - keyExpTime
