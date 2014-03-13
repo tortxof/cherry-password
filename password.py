@@ -257,4 +257,18 @@ class Root(object):
         return html_template.format(content=out)
     delete.exposed = True
 
+    def edit(self, rowid):
+        out = ''
+        if not loggedIn():
+            out += html_message.format(message='You are not logged in.') + html_login
+        else:
+            if confirm == 'true':
+                pass
+            else:
+                pass
+                conn = sqlite3.connect(pwdatabase)
+                out += showResult(conn.execute("select *,rowid from passwords where rowid=?", [rowid]))
+                conn.close()
+        return html_template.format(content=out)
+
 cherrypy.quickstart(Root())
