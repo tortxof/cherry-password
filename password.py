@@ -38,7 +38,7 @@ font-family:monospace;
 font-size:16px;
 border:1px solid #666;
 }}
-.searchform, .addform, .loginform, .results, .message, .confirmdelete
+.searchform, .addform, .loginform, .results, .message, .confirmdelete, .editform
 {{
 background-color:#ccc;
 border:1px solid #333;
@@ -81,6 +81,23 @@ html_addform = """\
 </div>
 """
 
+html_editform = '''\
+<div class="editform">
+<form name="edit" action="/edit" method="post">
+<input type="hidden" name="rowid" value="{rowid}">
+<input type="hidden" name="confirm" value="true">
+<table>
+<tr><td>Title:</td><td><input type="text" name="title" value="{title}"></td></tr>
+<tr><td>URL:</td><td><input type="text" name="url" value="{url}"></td></tr>
+<tr><td>Username:</td><td><input type="text" name="username" value="{username}"></td></tr>
+<tr><td>Password:</td><td><input type="text" name="password" value="{password}"></td></tr>
+<tr><td>Other:</td><td><textarea name="other">{other}</textarea></td></tr>
+</table>
+<input type="submit" value="Submit">
+</form>
+</div>
+'''
+
 html_results = """\
 <div class="results">
 <table>
@@ -90,7 +107,7 @@ html_results = """\
 <tr><td>{headers[3]}:</td><td class="password">{password}</td></tr>
 <tr><td>{headers[4]}:</td><td><pre>{other}</pre></td></tr>
 </table>
-<a href="/delete?rowid={rowid}">Delete</a>
+<a href="/delete?rowid={rowid}">Delete</a> - <a href="/edit?rowid={rowid}">Edit</a>
 </div>
 """
 
@@ -257,18 +274,25 @@ class Root(object):
         return html_template.format(content=out)
     delete.exposed = True
 
-    def edit(self, rowid):
+    def edit(self, rowid, confirm='', title='', url='', username='', password='', other=''):
         out = ''
         if not loggedIn():
             out += html_message.format(message='You are not logged in.') + html_login
         else:
             if confirm == 'true':
-                pass
-            else:
-                pass
                 conn = sqlite3.connect(pwdatabase)
-                out += showResult(conn.execute("select *,rowid from passwords where rowid=?", [rowid]))
+                conn.execute("update passwords set title=?, url=?, username=?, password=?, other=? where rowid=?", (title, url, username, password, other, rowid))
+                conn.commit()
+                record = conn.execute("select *,rowid from passwords where rowid=?", (rowid,)).fetchone()
                 conn.close()
+                out += showResult((record,))
+            else:
+                conn = sqlite3.connect(pwdatabase)
+                record = conn.execute("select * from passwords where rowid=?", (rowid,)).fetchone()
+                conn.close()
+                out += html_editform.format(rowid=rowid, title=record[0], url=record[1], username=record[2], password=record[3], other=record[4])
+            out += html_searchform + html_addform
         return html_template.format(content=out)
+    edit.exposed = True
 
 cherrypy.quickstart(Root())
