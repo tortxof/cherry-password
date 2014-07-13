@@ -213,8 +213,9 @@ class Root(object):
     def login(self, password=''):
         out = ''
         conn = sqlite3.connect(pwdatabase)
-        pwHash, pwSalt = conn.execute("select * from master_pass", ())[0]
+        pwHash = [i[0] for i in conn.execute("select * from master_pass", ())]
         conn.close()
+        pwHash = pwHash[0]
         if bcrypt.checkpw(password, pwHash):
             cookie = cherrypy.response.cookie
             cookie['auth'] = newKey()
