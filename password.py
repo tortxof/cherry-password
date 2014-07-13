@@ -3,6 +3,7 @@
 import sqlite3
 import subprocess
 import os
+import bcrypt
 import cherrypy
 import time
 import config
@@ -212,9 +213,9 @@ class Root(object):
     def login(self, password=''):
         out = ''
         conn = sqlite3.connect(pwdatabase)
-        passwords = [i[0] for i in conn.execute("select * from master_pass", ())]
+        pwHash, pwSalt = conn.execute("select * from master_pass", ())[0]
         conn.close()
-        if password in passwords:
+        if bcrypt.checkpw(password, pwHash):
             cookie = cherrypy.response.cookie
             cookie['auth'] = newKey()
             out += html_message.format(message='You are now logged in.') + html_searchform + html_addform
@@ -245,7 +246,7 @@ class Root(object):
             newrecord[4] = other
             out += html_results.format(headers=headers,title=title,url=url,username=username,password=password,other=other,rowid='')
             out += html_searchform + html_addform
-            conn = sqlite3.connect(pwdatabase)   
+            conn = sqlite3.connect(pwdatabase)
             conn.execute('insert into passwords values (?, ?, ?, ?, ?)', newrecord)
             conn.commit()
             conn.close()
