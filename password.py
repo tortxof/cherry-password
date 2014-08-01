@@ -52,7 +52,7 @@ clear:both;
 <title>Password Manager</title>
 </head>
 <body>
-<div class="message"><a href="/">Home</a></div>
+<div class="message"><a href="/">Home</a> - <a href="/genpass">Generate Password</a></div>
 {content}
 <div class="message"><a href="/">Home</a></div>
 </body>
@@ -208,6 +208,10 @@ class Root(object):
         else:
             out += html_searchform + html_addform
         return html_template.format(content=out)
+    index.exposed = True
+
+    def genpass(self):
+        return html_template.format(content=html_message.format(message=mkPasswd()))
     index.exposed = True
 
     def login(self, password=''):
