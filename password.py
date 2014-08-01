@@ -212,7 +212,7 @@ class Root(object):
 
     def genpass(self):
         return html_template.format(content=html_message.format(message=mkPasswd()))
-    index.exposed = True
+    genpass.exposed = True
 
     def login(self, password=''):
         out = ''
