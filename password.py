@@ -211,18 +211,18 @@ def keyValid(key):
     conn.close()
     return False
 
-def pwSearch(query):
+def pwSearch(query, aes_key):
     '''Returns results of search.'''
     conn = sqlite3.connect(pwdatabase)
-    result = showResult(conn.execute("select *,rowid from passwords where title like ?", ['%{}%'.format(query)]))
+    result = showResult(conn.execute("select *,rowid from passwords where title like ?", ['%{}%'.format(query)]), aes_key)
     conn.close()
     return result
 
-def showResult(result):
+def showResult(result, aes_key):
     '''Renders given results.'''
     out = ''
     for row in result:
-        out += html_results.format(headers=headers,title=row[0],url=row[1],username=row[2],password=row[3],other=row[4],rowid=row[5])
+        out += html_results.format(headers=headers,title=row[0],url=row[1],username=row[2],password=decrypt(aes_key, row[3]).decode(),other=decrypt(aes_key, row[4]).decode(),rowid=row[5])
     return out
 
 def mkPasswd():
@@ -265,7 +265,8 @@ class Root(object):
         if not loggedIn():
             out += html_message.format(message='You are not logged in.') + html_login
         else:
-            out += pwSearch(query) + html_searchform + html_addform
+            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
+            out += pwSearch(query, aes_key) + html_searchform + html_addform
         return html_template.format(content=out)
     search.exposed = True
 
@@ -274,6 +275,7 @@ class Root(object):
         if not loggedIn():
             out += html_message.format(message='You are not logged in.') + html_login
         else:
+            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
             newrecord = ['' for i in range(5)]
             newrecord[0] = title
             newrecord[1] = url
@@ -282,6 +284,8 @@ class Root(object):
             newrecord[4] = other
             out += html_results.format(headers=headers,title=title,url=url,username=username,password=password,other=other,rowid='')
             out += html_searchform + html_addform
+            newrecord[3] = encrypt(aes_key, newrecord[3])
+            newrecord[4] = encrypt(aes_key, newrecord[4])
             conn = sqlite3.connect(pwdatabase)
             conn.execute('insert into passwords values (?, ?, ?, ?, ?)', newrecord)
             conn.commit()
