@@ -162,9 +162,17 @@ def loggedIn():
             return True
     return False
 
+def toHex(s):
+    '''Returns hex string.'''
+    return codecs.encode(s, 'hex').decode()
+
+def fromHex(s):
+    '''Returns bytes.'''
+    return codecs.decode(s, 'hex')
+
 def genHex(length=32):
     '''Generate random hex string.'''
-    return codecs.encode(os.urandom(length), 'hex').decode()
+    return toHex(os.urandom(length))
 
 def nowUnixInt():
     '''Return int unix time.'''
@@ -234,12 +242,14 @@ class Root(object):
     def login(self, password=''):
         out = ''
         conn = sqlite3.connect(pwdatabase)
-        pwHash = [i[0] for i in conn.execute("select * from master_pass", ())]
+        master_pass = [i for i in conn.execute("select * from master_pass", ())]
         conn.close()
-        pwHash = pwHash[0]
+        pwHash = master_pass[0][0]
+        salt = master_pass[0][1]
         if bcrypt.checkpw(password, pwHash):
             cookie = cherrypy.response.cookie
             cookie['auth'] = newKey()
+            cookie['aes_key'] = toHex(bcrypt.kdf(password, salt, 16, 32))
             out += html_message.format(message='You are now logged in.') + html_searchform + html_addform
         else:
             out += html_message.format(message='Login failed.') + html_login
