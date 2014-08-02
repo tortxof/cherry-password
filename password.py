@@ -298,17 +298,18 @@ class Root(object):
         if not loggedIn():
             out += html_message.format(message='You are not logged in.') + html_login
         else:
+            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
             if confirm == 'true':
                 conn = sqlite3.connect(pwdatabase)
                 out += html_message.format(message="Record Deleted")
-                out += showResult(conn.execute("select *,rowid from passwords where rowid=?", [rowid]))
+                out += showResult(conn.execute("select *,rowid from passwords where rowid=?", [rowid]), aes_key)
                 conn.execute("delete from passwords where rowid=?", [rowid])
                 conn.commit()
                 conn.close()
             else:
                 conn = sqlite3.connect(pwdatabase)
                 out += html_message.format(message="Are you sure you want to delete this record?")
-                out += showResult(conn.execute("select *,rowid from passwords where rowid=?", [rowid]))
+                out += showResult(conn.execute("select *,rowid from passwords where rowid=?", [rowid]), aes_key)
                 out += html_confirmdelete.format(rowid=rowid)
                 conn.close()
             out += html_searchform + html_addform
