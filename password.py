@@ -321,18 +321,19 @@ class Root(object):
         if not loggedIn():
             out += html_message.format(message='You are not logged in.') + html_login
         else:
+            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
             if confirm == 'true':
                 conn = sqlite3.connect(pwdatabase)
-                conn.execute("update passwords set title=?, url=?, username=?, password=?, other=? where rowid=?", (title, url, username, password, other, rowid))
+                conn.execute("update passwords set title=?, url=?, username=?, password=?, other=? where rowid=?", (title, url, username, encrypt(aes_key, password), encrypt(aes_key, other), rowid))
                 conn.commit()
                 record = conn.execute("select *,rowid from passwords where rowid=?", (rowid,)).fetchone()
                 conn.close()
-                out += showResult((record,))
+                out += showResult((record,), aes_key)
             else:
                 conn = sqlite3.connect(pwdatabase)
                 record = conn.execute("select * from passwords where rowid=?", (rowid,)).fetchone()
                 conn.close()
-                out += html_editform.format(rowid=rowid, title=record[0], url=record[1], username=record[2], password=record[3], other=record[4])
+                out += html_editform.format(rowid=rowid, title=record[0], url=record[1], username=record[2], password=decrypt(aes_key, record[3]).decode(), other=decrypt(aes_key, record[4]).decode())
             out += html_searchform + html_addform
         return html_template.format(content=out)
     edit.exposed = True
