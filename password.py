@@ -4,6 +4,7 @@ import sqlite3
 import subprocess
 import os
 import bcrypt
+import codecs
 import cherrypy
 import time
 import config
@@ -147,7 +148,7 @@ def loggedIn():
 
 def genHex(length=32):
     '''Generate random hex string.'''
-    return ''.join(['{:02x}'.format(x) for x in os.urandom(length)])
+    return codecs.encode(os.urandom(length), 'hex').decode()
 
 def nowUnixInt():
     '''Return int unix time.'''
