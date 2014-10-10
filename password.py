@@ -9,14 +9,11 @@ from Crypto.Cipher import AES
 import codecs
 import cherrypy
 import time
-import config
 
-pwdatabase = config.dbfile
+pwdatabase = 'passwords.db'
 # pwdatabase = ':memory:'
 
-cherrypy.config.update({'server.socket_host': config.host,
-                        'server.socket_port': config.port,
-                        })
+cherrypy.config.update('server.conf')
 
 # Set key expiration time in seconds
 keyExpTime = 60 * 5
