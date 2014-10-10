@@ -23,32 +23,7 @@ html_template = """\
 <html>
 <head>
 <meta charset="UTF-8">
-<style>
-body {{
-font-size:16px;
-background-color:#666;
-padding:16px;
-}}
-.password
-{{
-font-family:monospace;
-}}
-input, textarea
-{{
-font-family:monospace;
-font-size:16px;
-border:1px solid #666;
-}}
-.searchform, .addform, .loginform, .results, .message, .confirmdelete, .editform
-{{
-background-color:#ccc;
-border:1px solid #333;
-margin:16px;
-padding:16px;
-float:left;
-clear:both;
-}}
-</style>
+<link href="/static/style.css" rel="stylesheet" type="text/css" />
 <title>Password Manager</title>
 </head>
 <body>
