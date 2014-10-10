@@ -311,4 +311,4 @@ class Root(object):
     edit.exposed = True
 
 if __name__ == "__main__":
-    cherrypy.quickstart(Root())
+    cherrypy.quickstart(Root(), '/', 'app.conf')
