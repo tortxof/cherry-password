@@ -24,6 +24,7 @@ html_template = """\
 <head>
 <meta charset="UTF-8">
 <link href="/static/style.css" rel="stylesheet" type="text/css" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Password Manager</title>
 </head>
 <body>
