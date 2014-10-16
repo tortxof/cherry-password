@@ -13,6 +13,8 @@ import time
 pwdatabase = 'passwords.db'
 # pwdatabase = ':memory:'
 
+authKeys = dict()
+
 cherrypy.config.update('server.conf')
 
 # Set key expiration time in seconds
@@ -159,30 +161,20 @@ def newKey():
     '''Creates new key, adds it to database with timestamp, and returns it.'''
     key = genHex()
     date = nowUnixInt()
-    conn = sqlite3.connect(pwdatabase)
-    conn.execute("insert into keys values (?, ?)", (key, date))
-    conn.commit()
-    conn.close()
+    authKeys[key] = date
     return key
 
 def keyValid(key):
     '''Return True if key is in database and is not expired. Updates timestamp if key is valid.'''
-    if not key:
-        return False
     now = nowUnixInt()
     exp_date = now - keyExpTime
-    conn = sqlite3.connect(pwdatabase)
-    conn.execute("delete from keys where date < ?", (exp_date,))
-    dates = [i[0] for i in conn.execute("select date from keys where key=?", (key,))]
-    for date in dates:
-        if (date + keyExpTime) > now:
-            conn.execute("update keys set date=? where key=?", (now,key))
-            conn.commit()
-            conn.close()
-            return True
-    conn.commit()
-    conn.close()
-    return False
+    for i in authKeys.keys():
+        if authKeys[i] < exp_date:
+          del authKeys[i]
+    if key not in authKeys:
+        return False
+    authKeys[key] = now
+    return True
 
 def pwSearch(query, aes_key):
     '''Returns results of search.'''
