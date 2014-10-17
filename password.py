@@ -168,7 +168,8 @@ def keyValid(key):
     '''Return True if key is in database and is not expired. Updates timestamp if key is valid.'''
     now = nowUnixInt()
     exp_date = now - keyExpTime
-    for i in authKeys.keys():
+    keys = [key for key in authKeys.keys()]
+    for i in keys:
         if authKeys[i] < exp_date:
           del authKeys[i]
     if key not in authKeys:
