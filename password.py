@@ -146,6 +146,7 @@ def loggedIn():
     return False
 
 def failedLogin():
+    global login_attempts
     now = nowUnixInt()
     login_attempts.append(now)
     login_attempts = [i for i in login_attempts if i > now - login_attempt_window]
