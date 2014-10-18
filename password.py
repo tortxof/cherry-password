@@ -154,7 +154,7 @@ def failedLogin():
         loginAttemptNotify()
 
 def loginAttemptNotify():
-    subprocess.call(('./login_attempt_notify',))
+    subprocess.call(['./login_attempt_notify'])
 
 def toHex(s):
     '''Returns hex string.'''
