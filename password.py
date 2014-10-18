@@ -15,6 +15,10 @@ pwdatabase = 'passwords.db'
 
 authKeys = dict()
 
+login_attempts = []
+login_attempt_window = 60 * 5
+login_attempts_allowed = 3
+
 cherrypy.config.update('server.conf')
 
 # Set key expiration time in seconds
@@ -141,6 +145,9 @@ def loggedIn():
             return True
     return False
 
+def loginAttemptNotify():
+    subprocess.call(('login_attempt_notify',))
+
 def toHex(s):
     '''Returns hex string.'''
     return codecs.encode(s, 'hex').decode()
@@ -222,6 +229,10 @@ class Root(object):
             cookie['aes_key'] = toHex(bcrypt.kdf(password, salt, 16, 32))
             out += html_message.format(message='You are now logged in.') + html_searchform + html_addform
         else:
+            login_attempts.append(nowUnixInt())
+            login_attempts = [i for i in login_attempts if i > nowUnixInt() - login_attempt_window]
+            if len(login_attempts) > login_attempts_allowed:
+                loginAttemptNotify()
             out += html_message.format(message='Login failed.') + html_login
         return html_template.format(content=out)
     login.exposed = True
