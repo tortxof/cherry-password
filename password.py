@@ -34,7 +34,7 @@ html_template = """\
 <title>Password Manager</title>
 </head>
 <body>
-<div class="message"><a href="/">Home</a> - <a href="/genpass">Generate Password</a></div>
+<div class="message"><a href="/">Home</a> - <a href="/logout">Logout</a> - <a href="/genpass">Generate Password</a></div>
 {content}
 <div class="message"><a href="/">Home</a></div>
 </body>
