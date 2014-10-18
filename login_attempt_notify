@@ -1,1 +1,2 @@
+#!/bin/bash
 ssh europa.djones.co 'echo failed_logins | mail -s failed_logins tortxof@gmail.com'
