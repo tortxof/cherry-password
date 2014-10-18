@@ -179,6 +179,13 @@ def newKey():
     authKeys[key] = date
     return key
 
+def delKey(key):
+    '''Removes auth key. Used for logout.'''
+    if key in authKeys:
+        del authKeys[key]
+        return True
+    return False
+
 def keyValid(key):
     '''Return True if key is in database and is not expired. Updates timestamp if key is valid.'''
     now = nowUnixInt()
@@ -241,6 +248,19 @@ class Root(object):
             out += html_message.format(message='Login failed.') + html_login
         return html_template.format(content=out)
     login.exposed = True
+
+    def logout(self):
+        out = ''
+        cookie = cherrypy.request.cookie
+        if 'auth' in cookie.keys():
+            if delKey(cookie['auth'].value):
+                out += html_message.format(message='You are now logged out.')
+            else:
+                out += html_message.format(message='Auth key not found.')
+        else:
+            out += html_message.format(message='You were not logged in.')
+        return html_template.format(content=out)
+    logout.exposed = True
 
     def search(self, query=''):
         out = ''
