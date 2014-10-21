@@ -259,6 +259,7 @@ class Root(object):
                 out += html_message.format(message='Auth key not found.')
         else:
             out += html_message.format(message='You were not logged in.')
+        out += html_login
         return html_template.format(content=out)
     logout.exposed = True
 
