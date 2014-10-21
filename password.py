@@ -44,7 +44,7 @@ html_template = """\
 html_searchform = """\
 <div class="searchform">
 <form name="search" action="/search" method="get">
-<input type="text" name="query">
+<input type="text" name="query" autofocus>
 <input type="submit" value="Search">
 </form>
 </div>
@@ -111,7 +111,7 @@ html_confirmdelete = """\
 html_login = """\
 <div class="loginform">
 <form name="login" action="/login" method="post">
-<input type="password" name="password">
+<input type="password" name="password" autofocus>
 <input type="submit" value="Login">
 </form>
 </div>
