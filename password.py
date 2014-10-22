@@ -238,7 +238,7 @@ class Root(object):
         return html_template.format(content=out)
     index.exposed = True
 
-    def setup(password=''):
+    def setup(self, password=''):
         out = ''
         if not password:
             out += html_message.format(message='No database file found. Setting up new database.')
