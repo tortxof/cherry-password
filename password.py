@@ -230,7 +230,7 @@ def newDB(pwHash):
     conn = sqlite3.connect(pwdatabase)
     conn.execute('create table passwords (title text, url text, username text, password text, other text)', ())
     conn.execute('create table master_pass (password text, salt text)', ())
-    conn.execute('insert into master_pass values (?, ?)', (pwHash, bcrypt.gensalt()))
+    conn.execute('insert into master_pass values (?, ?)', (pwHash, os.urandom(32)))
     conn.commit()
     conn.close()
 
