@@ -226,6 +226,9 @@ def mkPasswd():
     '''Returns generated password from pwgen command line utility.'''
     return subprocess.check_output(['pwgen','-cn','12','1']).decode().strip()
 
+def newDB(pwHash):
+    pass
+
 class Root(object):
     def index(self):
         out = ''
@@ -245,7 +248,10 @@ class Root(object):
             out += html_setupform
             return html_template.format(content=out)
         else:
-            return 'Not implemented.'
+            pwHash = bcrypt.hashpw(password, bcrypt.gensalt())
+            newDB(pwHash)
+            out += html_message.format(message='New database has been created.')
+            return html_template.format(content=out)
     setup.exposed = True
 
     def genpass(self):
@@ -258,7 +264,6 @@ class Root(object):
         master_pass = [i for i in conn.execute("select * from master_pass", ())]
         conn.close()
         pwHash = master_pass[0][0]
-        salt = master_pass[0][1]
         if bcrypt.checkpw(password, pwHash):
             cookie = cherrypy.response.cookie
             cookie['auth'] = newKey()
