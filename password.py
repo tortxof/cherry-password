@@ -220,12 +220,18 @@ def mkPasswd():
 class Root(object):
     def index(self):
         out = ''
+        if not os.path.isfile(pwdatabase):
+            raise cherrypy.HTTPRedirect('/setup')
         if not loggedIn():
             out += html_login
         else:
             out += html_searchform + html_addform
         return html_template.format(content=out)
     index.exposed = True
+
+    def setup(pw=''):
+        return 'Not Implemented'
+    setup.exposed = True
 
     def genpass(self):
         return html_template.format(content=html_message.format(message=mkPasswd()))
