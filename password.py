@@ -320,14 +320,16 @@ class Root(object):
             newrecord[2] = username
             newrecord[3] = password = mkPasswd()
             newrecord[4] = other
-            out += html_results.format(headers=headers,title=title,url=url,username=username,password=password,other=other,rowid='')
-            out += html_searchform + html_addform
             newrecord[3] = encrypt(aes_key, newrecord[3])
             newrecord[4] = encrypt(aes_key, newrecord[4])
             conn = sqlite3.connect(pwdatabase)
-            conn.execute('insert into passwords values (?, ?, ?, ?, ?)', newrecord)
+            cur = conn.cursor()
+            cur.execute('insert into passwords values (?, ?, ?, ?, ?)', newrecord)
+            rowid = cur.lastrowid
             conn.commit()
+            out += showResult(conn.execute("select *,rowid from passwords where rowid=?", (rowid,)), aes_key)
             conn.close()
+            out += html_searchform + html_addform
         return html_template.format(content=out)
     add.exposed = True
 
