@@ -14,7 +14,7 @@ font-family:monospace;
 font-size:16px;
 border:1px solid #666;
 }
-.searchform, .addform, .loginform, .results, .message, .confirmdelete, .editform
+.searchform, .addform, .loginform, .setupform, .results, .message, .confirmdelete, .editform
 {
 background-color:#ccc;
 border:1px solid #333;

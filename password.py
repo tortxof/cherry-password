@@ -41,6 +41,15 @@ html_template = """\
 </html>
 """
 
+html_setupform = '''\
+<div class="setupform">
+<form name="setup" action="/setup" method="post">
+<input type="password" name="password" autofocus>
+<input type="submit" value="Set Password">
+</form>
+</div>
+'''
+
 html_searchform = """\
 <div class="searchform">
 <form name="search" action="/search" method="get">
@@ -229,8 +238,14 @@ class Root(object):
         return html_template.format(content=out)
     index.exposed = True
 
-    def setup(pw=''):
-        return 'Not Implemented'
+    def setup(password=''):
+        out = ''
+        if not password:
+            out += html_message.format(message='No database file found. Setting up new database.')
+            out += html_setupform
+            return html_template.format(content=out)
+        else:
+            return 'Not implemented.'
     setup.exposed = True
 
     def genpass(self):
