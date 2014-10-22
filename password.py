@@ -227,7 +227,12 @@ def mkPasswd():
     return subprocess.check_output(['pwgen','-cn','12','1']).decode().strip()
 
 def newDB(pwHash):
-    pass
+    conn = sqlite3.connect(pwdatabase)
+    conn.execute('create table passwords (title text, url text, username text, password text, other text)', ())
+    conn.execute('create table master_pass (password text)', ())
+    conn.execute('insert into master_pass values (?)', (pwHash,))
+    conn.commit()
+    conn.close()
 
 class Root(object):
     def index(self):
