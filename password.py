@@ -248,6 +248,9 @@ class Root(object):
 
     def setup(self, password=''):
         out = ''
+        if os.path.isfile(pwdatabase):
+            out += html_message.format(message='Database file already exists.')
+            return html_template.format(content=out)
         if not password:
             out += html_message.format(message='No database file found. Setting up new database.')
             out += html_setupform
