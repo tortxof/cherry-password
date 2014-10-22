@@ -229,8 +229,8 @@ def mkPasswd():
 def newDB(pwHash):
     conn = sqlite3.connect(pwdatabase)
     conn.execute('create table passwords (title text, url text, username text, password text, other text)', ())
-    conn.execute('create table master_pass (password text)', ())
-    conn.execute('insert into master_pass values (?)', (pwHash,))
+    conn.execute('create table master_pass (password text, salt text)', ())
+    conn.execute('insert into master_pass values (?, ?)', (pwHash, bcrypt.gensalt()))
     conn.commit()
     conn.close()
 
@@ -269,6 +269,7 @@ class Root(object):
         master_pass = [i for i in conn.execute("select * from master_pass", ())]
         conn.close()
         pwHash = master_pass[0][0]
+        salt = master_pass[0][1]
         if bcrypt.checkpw(password, pwHash):
             cookie = cherrypy.response.cookie
             cookie['auth'] = newKey()
