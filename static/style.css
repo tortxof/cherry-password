@@ -29,7 +29,7 @@ body
 {
 padding:16px;
 }
-.searchform, .addform, .loginform, .results, .message, .confirmdelete, .editform
+.searchform, .addform, .loginform, .setupform, .results, .message, .confirmdelete, .editform
 {
 margin:16px;
 padding:16px;
