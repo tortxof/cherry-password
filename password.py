@@ -141,7 +141,7 @@ html_results = """\
 """
 
 html_message = """\
-<div class="message">{message}</div>
+<div class="alert alert-info" role="alert">{message}</div>
 """
 
 html_confirmdelete = """\
