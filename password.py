@@ -102,7 +102,6 @@ html_searchform = """\
 
 html_addform = """\
 <div class="panel panel-default">
-<div class="panel-body">
 <form name="add" action="/add" method="post">
 <table class="table">
 <tr><td>Title:</td><td><input type="text" name="title"></td></tr>
@@ -112,7 +111,6 @@ html_addform = """\
 </table>
 <input type="submit" value="Add">
 </form>
-</div>
 </div>
 """
 
