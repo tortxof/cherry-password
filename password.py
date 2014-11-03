@@ -45,9 +45,19 @@ html_template = '''\
 </head>
 <body>
 
-<div class="message"><a href="/">Home</a> - <a href="/logout">Logout</a> - <a href="/genpass">Generate Password</a></div>
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+                <li><a href="/logout">Logout</a></li>
+                <li><a href="/genpass">Generate Password</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
 {content}
-<div class="message"><a href="/">Home</a></div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
