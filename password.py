@@ -128,8 +128,9 @@ html_editform = '''\
 '''
 
 html_results = """\
-<div class="results">
-<table>
+<div class="panel panel-default">
+<div class="panel-body">
+<table class="table">
 <tr><td>{headers[0]}:</td><td>{title}</td></tr>
 <tr><td>{headers[1]}:</td><td><a target="_blank" href="{url}">{url}</a></td></tr>
 <tr><td>{headers[2]}:</td><td>{username}</td></tr>
@@ -137,6 +138,7 @@ html_results = """\
 <tr><td>{headers[4]}:</td><td><pre>{other}</pre></td></tr>
 </table>
 <a href="/delete?rowid={rowid}">Delete</a> - <a href="/edit?rowid={rowid}">Edit</a>
+</div>
 </div>
 """
 
