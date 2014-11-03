@@ -104,7 +104,7 @@ html_addform = """\
 <div class="panel panel-default">
 <div class="panel-body">
 <form name="add" action="/add" method="post">
-<table class="table">
+<table class="table table-bordered">
 <tr><td>Title:</td><td><input type="text" name="title"></td></tr>
 <tr><td>URL:</td><td><input type="text" name="url"></td></tr>
 <tr><td>Username:</td><td><input type="text" name="username"></td></tr>
@@ -122,7 +122,7 @@ html_editform = '''\
 <form name="edit" action="/edit" method="post">
 <input type="hidden" name="rowid" value="{rowid}">
 <input type="hidden" name="confirm" value="true">
-<table class="table">
+<table class="table table-bordered">
 <tr><td>Title:</td><td><input type="text" name="title" value="{title}"></td></tr>
 <tr><td>URL:</td><td><input type="text" name="url" value="{url}"></td></tr>
 <tr><td>Username:</td><td><input type="text" name="username" value="{username}"></td></tr>
@@ -138,7 +138,7 @@ html_editform = '''\
 html_results = """\
 <div class="panel panel-default">
 <div class="panel-body">
-<table class="table">
+<table class="table table-bordered">
 <tr><td>{headers[0]}:</td><td>{title}</td></tr>
 <tr><td>{headers[1]}:</td><td><a target="_blank" href="{url}">{url}</a></td></tr>
 <tr><td>{headers[2]}:</td><td>{username}</td></tr>
