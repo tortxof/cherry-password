@@ -79,25 +79,30 @@ html_template = '''\
 '''
 
 html_setupform = '''\
-<div class="setupform">
+<div class="panel panel-default">
+<div class="panel-body">
 <form name="setup" action="/setup" method="post">
 <input type="password" name="password" autofocus>
 <input type="submit" value="Set Password">
 </form>
 </div>
+</div>
 '''
 
 html_searchform = """\
-<div class="searchform">
+<div class="panel panel-default">
+<div class="panel-body">
 <form name="search" action="/search" method="get">
 <input type="text" name="query" autofocus>
 <input type="submit" value="Search">
 </form>
 </div>
+</div>
 """
 
 html_addform = """\
-<div class="addform">
+<div class="panel panel-default">
+<div class="panel-body">
 <form name="add" action="/add" method="post">
 <table>
 <tr><td>Title:</td><td><input type="text" name="title"></td></tr>
@@ -108,10 +113,12 @@ html_addform = """\
 <input type="submit" value="Add">
 </form>
 </div>
+</div>
 """
 
 html_editform = '''\
-<div class="editform">
+<div class="panel panel-default">
+<div class="panel-body">
 <form name="edit" action="/edit" method="post">
 <input type="hidden" name="rowid" value="{rowid}">
 <input type="hidden" name="confirm" value="true">
@@ -124,6 +131,7 @@ html_editform = '''\
 </table>
 <input type="submit" value="Submit">
 </form>
+</div>
 </div>
 '''
 
@@ -147,21 +155,25 @@ html_message = """\
 """
 
 html_confirmdelete = """\
-<div class="confirmdelete">
+<div class="panel panel-default">
+<div class="panel-body">
 <form name="confirmdelete" action="/delete" method="post">
 <input type="hidden" name="rowid" value="{rowid}">
 <input type="hidden" name="confirm" value="true">
 <input type="submit" value="Confirm Delete">
 </form>
 </div>
+</div>
 """
 
 html_login = """\
-<div class="loginform">
+<div class="panel panel-default">
+<div class="panel-body">
 <form name="login" action="/login" method="post">
 <input type="password" name="password" autofocus>
 <input type="submit" value="Login">
 </form>
+</div>
 </div>
 """
 
