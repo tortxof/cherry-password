@@ -102,6 +102,7 @@ html_searchform = """\
 
 html_addform = """\
 <div class="panel panel-default">
+<div class="panel-heading">Add Record</div>
 <div class="panel-body">
 <form name="add" action="/add" method="post">
 <table class="table table-bordered">
@@ -118,6 +119,7 @@ html_addform = """\
 
 html_editform = '''\
 <div class="panel panel-default">
+<div class="panel-heading">Edit Record</div>
 <div class="panel-body">
 <form name="edit" action="/edit" method="post">
 <input type="hidden" name="rowid" value="{rowid}">
@@ -145,8 +147,8 @@ html_results = """\
 <tr><td>{headers[3]}:</td><td class="password">{password}</td></tr>
 <tr><td>{headers[4]}:</td><td><pre>{other}</pre></td></tr>
 </table>
-<a href="/delete?rowid={rowid}">Delete</a> - <a href="/edit?rowid={rowid}">Edit</a>
 </div>
+<div class="panel-footer"><a href="/delete?rowid={rowid}">Delete</a> - <a href="/edit?rowid={rowid}">Edit</a></div>
 </div>
 """
 
