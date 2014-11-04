@@ -490,7 +490,6 @@ class Root(object):
                 out += showResult(conn.execute("select *,rowid from passwords where rowid=?", [rowid]), aes_key)
                 out += html_confirmdelete.format(rowid=rowid)
                 conn.close()
-            out += html_searchform + html_addform
         return html_template.format(content=out)
     delete.exposed = True
 
@@ -512,7 +511,6 @@ class Root(object):
                 record = conn.execute("select * from passwords where rowid=?", (rowid,)).fetchone()
                 conn.close()
                 out += html_editform.format(rowid=rowid, title=record[0], url=record[1], username=record[2], password=decrypt(aes_key, record[3]).decode(), other=decrypt(aes_key, record[4]).decode())
-            out += html_searchform + html_addform
         return html_template.format(content=out)
     edit.exposed = True
 
