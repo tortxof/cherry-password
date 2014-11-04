@@ -85,7 +85,7 @@ html_setupform = '''\
 <form class="form-inline" role="form" name="setup" action="/setup" method="post">
 
 <div class="form-group">
-<input type="password" name="password" autofocus>
+<input class="form-control" type="password" name="password" autofocus>
 </div>
 
 <button type="submit" class="btn btn-default">Set Password</button>
