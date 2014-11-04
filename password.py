@@ -182,16 +182,23 @@ html_confirmdelete = """\
 </div>
 """
 
-html_login = """\
+html_login = '''\
 <div class="panel panel-default">
 <div class="panel-body">
-<form name="login" action="/login" method="post">
-<input type="password" name="password" autofocus>
-<input type="submit" value="Login">
+
+<form class="form-inline" role="form" name="login" action="/login" method="post">
+
+<div class="form-group">
+<input class="form-control" type="password" name="password" autofocus>
+</div>
+
+<button type="submit" class="btn btn-default">Login</button>
+
 </form>
+
 </div>
 </div>
-"""
+'''
 
 headers = ('Title','URL','Username','Password','Other')
 
