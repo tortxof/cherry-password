@@ -81,10 +81,17 @@ html_template = '''\
 html_setupform = '''\
 <div class="panel panel-default">
 <div class="panel-body">
-<form name="setup" action="/setup" method="post">
+
+<form class="form-inline" role="form" name="setup" action="/setup" method="post">
+
+<div class="form-group">
 <input type="password" name="password" autofocus>
-<input type="submit" value="Set Password">
+</div>
+
+<button type="submit" class="btn btn-default">Set Password</button>
+
 </form>
+
 </div>
 </div>
 '''
