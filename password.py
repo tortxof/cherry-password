@@ -114,39 +114,98 @@ html_searchform = '''\
 </div>
 '''
 
-html_addform = """\
+html_addform = '''\
 <div class="panel panel-default">
 <div class="panel-heading">Add Record</div>
 <div class="panel-body">
-<form name="add" action="/add" method="post">
-<table class="table table-bordered">
-<tr><td>Title:</td><td><input type="text" name="title"></td></tr>
-<tr><td>URL:</td><td><input type="text" name="url"></td></tr>
-<tr><td>Username:</td><td><input type="text" name="username"></td></tr>
-<tr><td>Other:</td><td><textarea name="other"></textarea></td></tr>
-</table>
-<input type="submit" value="Add">
+
+<form class="form-horizontal" role="form" name="add" action="/add" method="post">
+
+<div class="form-group">
+<label class="col-sm-3 control-label">Title:</label>
+<div class="col-sm-9">
+<input class="form-control" type="text" name="title">
+</div>
+</div>
+
+<div class="form-group">
+<label class="col-sm-3 control-label">URL:</label>
+<div class="col-sm-9">
+<input class="form-control" type="text" name="url">
+</div>
+</div>
+
+<div class="form-group">
+<label class="col-sm-3 control-label">Username:</label>
+<div class="col-sm-9">
+<input class="form-control" type="text" name="username">
+</div>
+</div>
+
+<div class="form-group">
+<label class="col-sm-3 control-label">Other:</label>
+<div class="col-sm-9">
+<textarea class="form-control" name="other"></textarea>
+</div>
+</div>
+
+<button type="submit" class="btn btn-default">Add</button>
+
 </form>
+
 </div>
 </div>
-"""
+'''
 
 html_editform = '''\
 <div class="panel panel-default">
 <div class="panel-heading">Edit Record</div>
 <div class="panel-body">
-<form name="edit" action="/edit" method="post">
+
+<form class="form-horizontal" role="form" name="edit" action="/edit" method="post">
+
 <input type="hidden" name="rowid" value="{rowid}">
 <input type="hidden" name="confirm" value="true">
-<table class="table table-bordered">
-<tr><td>Title:</td><td><input type="text" name="title" value="{title}"></td></tr>
-<tr><td>URL:</td><td><input type="text" name="url" value="{url}"></td></tr>
-<tr><td>Username:</td><td><input type="text" name="username" value="{username}"></td></tr>
-<tr><td>Password:</td><td><input type="text" name="password" value="{password}"></td></tr>
-<tr><td>Other:</td><td><textarea name="other">{other}</textarea></td></tr>
-</table>
-<input type="submit" value="Submit">
+
+<div class="form-group">
+<label class="col-sm-3 control-label">Title:</label>
+<div class="col-sm-9">
+<input class="form-control" type="text" name="title" value="{title}">
+</div>
+</div>
+
+<div class="form-group">
+<label class="col-sm-3 control-label">URL:</label>
+<div class="col-sm-9">
+<input class="form-control" type="text" name="url" value="{url}">
+</div>
+</div>
+
+<div class="form-group">
+<label class="col-sm-3 control-label">Username:</label>
+<div class="col-sm-9">
+<input class="form-control" type="text" name="username" value="{username}">
+</div>
+</div>
+
+<div class="form-group">
+<label class="col-sm-3 control-label">Password:</label>
+<div class="col-sm-9">
+<input class="form-control" type="text" name="password" value="{password}">
+</div>
+</div>
+
+<div class="form-group">
+<label class="col-sm-3 control-label">Other:</label>
+<div class="col-sm-9">
+<textarea class="form-control" name="other">{other}</textarea>
+</div>
+</div>
+
+<button type="submit" class="btn btn-default">Submit</button>
+
 </form>
+
 </div>
 </div>
 '''
