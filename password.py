@@ -170,17 +170,22 @@ html_message = """\
 <div class="alert alert-info" role="alert">{message}</div>
 """
 
-html_confirmdelete = """\
+html_confirmdelete = '''\
 <div class="panel panel-default">
 <div class="panel-body">
-<form name="confirmdelete" action="/delete" method="post">
+
+<form class="form-inline" role="form" name="confirmdelete" action="/delete" method="post">
+
 <input type="hidden" name="rowid" value="{rowid}">
 <input type="hidden" name="confirm" value="true">
-<input type="submit" value="Confirm Delete">
+
+<button type="submit" class="btn btn-default">Confirm Delete</button>
+
 </form>
+
 </div>
 </div>
-"""
+'''
 
 html_login = '''\
 <div class="panel panel-default">
