@@ -96,16 +96,23 @@ html_setupform = '''\
 </div>
 '''
 
-html_searchform = """\
+html_searchform = '''\
 <div class="panel panel-default">
 <div class="panel-body">
-<form name="search" action="/search" method="get">
-<input type="text" name="query" autofocus>
-<input type="submit" value="Search">
+
+<form class="form-inline" role="form" name="search" action="/search" method="get">
+
+<div class="form-group">
+<input class="form-control" type="text" name="query" autofocus>
+</div>
+
+<button type="submit" class="btn btn-default">Search</button>
+
 </form>
+
 </div>
 </div>
-"""
+'''
 
 html_addform = """\
 <div class="panel panel-default">
