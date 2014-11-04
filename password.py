@@ -238,7 +238,7 @@ html_confirmdelete = '''\
 <input type="hidden" name="rowid" value="{rowid}">
 <input type="hidden" name="confirm" value="true">
 
-<button type="submit" class="btn btn-default">Confirm Delete</button>
+<button type="submit" class="btn btn-warning">Confirm Delete</button>
 
 </form>
 
