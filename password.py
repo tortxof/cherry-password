@@ -442,7 +442,7 @@ class Root(object):
             out += html_message.format(message='You are not logged in.') + html_login
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
-            out += pwSearch(query, aes_key) + html_searchform + html_addform
+            out += html_searchform + pwSearch(query, aes_key)
         return html_template.format(content=out)
     search.exposed = True
 
@@ -465,9 +465,10 @@ class Root(object):
             cur.execute('insert into passwords values (?, ?, ?, ?, ?)', newrecord)
             rowid = cur.lastrowid
             conn.commit()
+            out += html_message.format(message='Record added.')
             out += showResult(conn.execute("select *,rowid from passwords where rowid=?", (rowid,)), aes_key)
             conn.close()
-            out += html_searchform + html_addform
+            out += html_searchform
         return html_template.format(content=out)
     add.exposed = True
 
@@ -479,7 +480,7 @@ class Root(object):
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
             if confirm == 'true':
                 conn = sqlite3.connect(pwdatabase)
-                out += html_message.format(message="Record Deleted")
+                out += html_message.format(message="Record deleted.")
                 out += showResult(conn.execute("select *,rowid from passwords where rowid=?", [rowid]), aes_key)
                 conn.execute("delete from passwords where rowid=?", [rowid])
                 conn.commit()
