@@ -28,200 +28,200 @@ html_template = '''\
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Password Manager</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Password Manager</title>
 
-<!-- Bootstrap -->
-<link href="/static/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap -->
+  <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 
-<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
 </head>
 <body>
 
-<nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+  <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
     <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">Password Manager</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="/">Home</a></li>
-                <li><a href="/logout">Logout</a></li>
-                <li><a href="/genpass">Generate Password</a></li>
-            </ul>
-        </div>
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Password Manager</a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="/">Home</a></li>
+          <li><a href="/logout">Logout</a></li>
+          <li><a href="/genpass">Generate Password</a></li>
+        </ul>
+      </div>
     </div>
-</nav>
+  </nav>
 
-<div class="container">
-{content}
-</div>
+  <div class="container">
+    {content}
+  </div>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="/static/js/bootstrap.min.js"></script>
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="/static/js/bootstrap.min.js"></script>
 </body>
 </html>
 '''
 
 html_setupform = '''\
 <div class="panel panel-default">
-<div class="panel-body">
+  <div class="panel-body">
 
-<form class="form-inline" role="form" name="setup" action="/setup" method="post">
+    <form class="form-inline" role="form" name="setup" action="/setup" method="post">
 
-<div class="form-group">
-<input class="form-control" type="password" name="password" autofocus>
-</div>
+      <div class="form-group">
+        <input class="form-control" type="password" name="password" autofocus>
+      </div>
 
-<button type="submit" class="btn btn-default">Set Password</button>
+      <button type="submit" class="btn btn-default">Set Password</button>
 
-</form>
+    </form>
 
-</div>
+  </div>
 </div>
 '''
 
 html_searchform = '''\
 <div class="panel panel-default">
-<div class="panel-body">
+  <div class="panel-body">
 
-<form class="form-inline" role="form" name="search" action="/search" method="get">
+    <form class="form-inline" role="form" name="search" action="/search" method="get">
 
-<div class="form-group">
-<input class="form-control" type="text" name="query" autofocus>
-</div>
+      <div class="form-group">
+        <input class="form-control" type="text" name="query" autofocus>
+      </div>
 
-<button type="submit" class="btn btn-default">Search</button>
+      <button type="submit" class="btn btn-default">Search</button>
 
-</form>
+    </form>
 
-</div>
+  </div>
 </div>
 '''
 
 html_addform = '''\
 <div class="panel panel-default">
-<div class="panel-heading">Add Record</div>
-<div class="panel-body">
+  <div class="panel-heading">Add Record</div>
+  <div class="panel-body">
 
-<form class="form-horizontal" role="form" name="add" action="/add" method="post">
+    <form class="form-horizontal" role="form" name="add" action="/add" method="post">
 
-<div class="form-group">
-<label class="col-sm-3 control-label">Title:</label>
-<div class="col-sm-9">
-<input class="form-control" type="text" name="title">
-</div>
-</div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Title:</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" name="title">
+        </div>
+      </div>
 
-<div class="form-group">
-<label class="col-sm-3 control-label">URL:</label>
-<div class="col-sm-9">
-<input class="form-control" type="text" name="url">
-</div>
-</div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">URL:</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" name="url">
+        </div>
+      </div>
 
-<div class="form-group">
-<label class="col-sm-3 control-label">Username:</label>
-<div class="col-sm-9">
-<input class="form-control" type="text" name="username">
-</div>
-</div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Username:</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" name="username">
+        </div>
+      </div>
 
-<div class="form-group">
-<label class="col-sm-3 control-label">Other:</label>
-<div class="col-sm-9">
-<textarea class="form-control" name="other"></textarea>
-</div>
-</div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Other:</label>
+        <div class="col-sm-9">
+          <textarea class="form-control" name="other"></textarea>
+        </div>
+      </div>
 
-<button type="submit" class="btn btn-default">Add</button>
+      <button type="submit" class="btn btn-default">Add</button>
 
-</form>
+    </form>
 
-</div>
+  </div>
 </div>
 '''
 
 html_editform = '''\
 <div class="panel panel-default">
-<div class="panel-heading">Edit Record</div>
-<div class="panel-body">
+  <div class="panel-heading">Edit Record</div>
+  <div class="panel-body">
 
-<form class="form-horizontal" role="form" name="edit" action="/edit" method="post">
+    <form class="form-horizontal" role="form" name="edit" action="/edit" method="post">
 
-<input type="hidden" name="rowid" value="{rowid}">
-<input type="hidden" name="confirm" value="true">
+      <input type="hidden" name="rowid" value="{rowid}">
+      <input type="hidden" name="confirm" value="true">
 
-<div class="form-group">
-<label class="col-sm-3 control-label">Title:</label>
-<div class="col-sm-9">
-<input class="form-control" type="text" name="title" value="{title}">
-</div>
-</div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Title:</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" name="title" value="{title}">
+        </div>
+      </div>
 
-<div class="form-group">
-<label class="col-sm-3 control-label">URL:</label>
-<div class="col-sm-9">
-<input class="form-control" type="text" name="url" value="{url}">
-</div>
-</div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">URL:</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" name="url" value="{url}">
+        </div>
+      </div>
 
-<div class="form-group">
-<label class="col-sm-3 control-label">Username:</label>
-<div class="col-sm-9">
-<input class="form-control" type="text" name="username" value="{username}">
-</div>
-</div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Username:</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" name="username" value="{username}">
+        </div>
+      </div>
 
-<div class="form-group">
-<label class="col-sm-3 control-label">Password:</label>
-<div class="col-sm-9">
-<input class="form-control" type="text" name="password" value="{password}">
-</div>
-</div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Password:</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" name="password" value="{password}">
+        </div>
+      </div>
 
-<div class="form-group">
-<label class="col-sm-3 control-label">Other:</label>
-<div class="col-sm-9">
-<textarea class="form-control" name="other">{other}</textarea>
-</div>
-</div>
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Other:</label>
+        <div class="col-sm-9">
+          <textarea class="form-control" name="other">{other}</textarea>
+        </div>
+      </div>
 
-<button type="submit" class="btn btn-default">Submit</button>
+      <button type="submit" class="btn btn-default">Submit</button>
 
-</form>
+    </form>
 
-</div>
+  </div>
 </div>
 '''
 
 html_results = """\
 <div class="panel panel-default">
-<div class="panel-body">
-<table class="table table-bordered">
-<tr><td>{headers[0]}:</td><td>{title}</td></tr>
-<tr><td>{headers[1]}:</td><td><a target="_blank" href="{url}">{url}</a></td></tr>
-<tr><td>{headers[2]}:</td><td>{username}</td></tr>
-<tr><td>{headers[3]}:</td><td class="password">{password}</td></tr>
-<tr><td>{headers[4]}:</td><td><pre>{other}</pre></td></tr>
-</table>
-</div>
-<div class="panel-footer"><a href="/delete?rowid={rowid}">Delete</a> - <a href="/edit?rowid={rowid}">Edit</a></div>
+  <div class="panel-body">
+    <table class="table table-bordered">
+      <tr><td>{headers[0]}:</td><td>{title}</td></tr>
+      <tr><td>{headers[1]}:</td><td><a target="_blank" href="{url}">{url}</a></td></tr>
+      <tr><td>{headers[2]}:</td><td>{username}</td></tr>
+      <tr><td>{headers[3]}:</td><td class="password">{password}</td></tr>
+      <tr><td>{headers[4]}:</td><td><pre>{other}</pre></td></tr>
+    </table>
+  </div>
+  <div class="panel-footer"><a href="/delete?rowid={rowid}">Delete</a> - <a href="/edit?rowid={rowid}">Edit</a></div>
 </div>
 """
 
@@ -231,36 +231,36 @@ html_message = """\
 
 html_confirmdelete = '''\
 <div class="panel panel-default">
-<div class="panel-body">
+  <div class="panel-body">
 
-<form class="form-inline" role="form" name="confirmdelete" action="/delete" method="post">
+    <form class="form-inline" role="form" name="confirmdelete" action="/delete" method="post">
 
-<input type="hidden" name="rowid" value="{rowid}">
-<input type="hidden" name="confirm" value="true">
+      <input type="hidden" name="rowid" value="{rowid}">
+      <input type="hidden" name="confirm" value="true">
 
-<button type="submit" class="btn btn-warning">Confirm Delete</button>
+      <button type="submit" class="btn btn-warning">Confirm Delete</button>
 
-</form>
+    </form>
 
-</div>
+  </div>
 </div>
 '''
 
 html_login = '''\
 <div class="panel panel-default">
-<div class="panel-body">
+  <div class="panel-body">
 
-<form class="form-inline" role="form" name="login" action="/login" method="post">
+    <form class="form-inline" role="form" name="login" action="/login" method="post">
 
-<div class="form-group">
-<input class="form-control" type="password" name="password" autofocus>
-</div>
+      <div class="form-group">
+        <input class="form-control" type="password" name="password" autofocus>
+      </div>
 
-<button type="submit" class="btn btn-default">Login</button>
+      <button type="submit" class="btn btn-default">Login</button>
 
-</form>
+    </form>
 
-</div>
+  </div>
 </div>
 '''
 
