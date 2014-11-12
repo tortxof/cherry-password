@@ -382,6 +382,7 @@ def deleteById(rowid, appuser):
     '''Deletes record by rowid.'''
     conn = sqlite3.connect(pwdatabase)
     conn.execute('delete from passwords where rowid=? and appuser=?', (rowid, appuser))
+    conn.commit()
     conn.close()
 
 def showResult(result, aes_key):
