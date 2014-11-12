@@ -469,17 +469,13 @@ class Root(object):
             out += html_message.format(message='You are not logged in.') + html_login
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
-            newrecord = ['' for i in range(5)]
-            newrecord[0] = title
-            newrecord[1] = url
-            newrecord[2] = username
-            newrecord[3] = password = mkPasswd()
-            newrecord[4] = other
-            newrecord[3] = encrypt(aes_key, newrecord[3])
-            newrecord[4] = encrypt(aes_key, newrecord[4])
+            appuser = keyUser(cherrypy.request.cookie['auth'].value)
+            password = encrypt(aes_key, mkPasswd())
+            other = encrypt(aes_key, other)
+            newrecord = (title, url, username, password, other, appuser)
             conn = sqlite3.connect(pwdatabase)
             cur = conn.cursor()
-            cur.execute('insert into passwords values (?, ?, ?, ?, ?)', newrecord)
+            cur.execute('insert into passwords values (?, ?, ?, ?, ?, ?)', newrecord)
             rowid = cur.lastrowid
             conn.commit()
             out += html_message.format(message='Record added.')
