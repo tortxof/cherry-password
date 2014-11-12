@@ -639,7 +639,7 @@ class Root(object):
         out = ''
         if not loggedIn():
             out += html_message.format(message='You are not logged in.') + html_login
-        if not json:
+        elif not json:
             out += html_message.format(message='Enter json data to import.')
             out += html_importform
         else:
