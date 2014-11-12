@@ -18,7 +18,7 @@ pwHash, salt = conn.execute('select * from master_pass').fetchone()
 
 if bcrypt.checkpw(password, pwHash):
     print('Password is correct.')
-    aes_key = toHex(bcrypt.kdf(password, salt, 16, 32))
+    aes_key = bcrypt.kdf(password, salt, 16, 32)
     records = [list(i) for i in conn.execute('select * from passwords')]
     print(records)
     print('Decrypting records.')
