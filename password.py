@@ -378,12 +378,32 @@ def getById(rowid, appuser, aes_key):
     conn.close()
     return result
 
+def getValuesById(rowid, appuser, aes_key):
+    '''Returns record values by rowid.'''
+    conn = sqlite3.connect(pwdatabase)
+    record = conn.execute('select *,rowid from passwords where rowid=? and appuser=?', (rowid, appuser)).fetchone()
+    conn.close()
+    record[3] = decrypt(aes_key, record[3]).decode()
+    record[4] = decrypt(aes_key, record[4]).decode()
+    return record
+
 def deleteById(rowid, appuser):
     '''Deletes record by rowid.'''
     conn = sqlite3.connect(pwdatabase)
     conn.execute('delete from passwords where rowid=? and appuser=?', (rowid, appuser))
     conn.commit()
     conn.close()
+
+def updateById(rowid, appuser, aes_key, record):
+    '''Updates a record.'''
+    title, url, username, password, other = record
+    password = encrypt(aes_key, password)
+    other = encrypt(aes_key, other)
+    conn = sqlite3.connect(pwdatabase)
+    conn.execute('update passwords set title=?, url=?, username=?, password=?, other=? where rowid=? and appuser=?', (title, url, username, password, other, rowid, appuser))
+    conn.commit()
+    conn.close()
+    pass
 
 def showResult(result, aes_key):
     '''Renders given results.'''
@@ -525,18 +545,15 @@ class Root(object):
             out += html_message.format(message='You are not logged in.') + html_login
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
+            appuser = keyUser(cherrypy.request.cookie['auth'].value)
             if confirm == 'true':
-                conn = sqlite3.connect(pwdatabase)
-                conn.execute("update passwords set title=?, url=?, username=?, password=?, other=? where rowid=?", (title, url, username, encrypt(aes_key, password), encrypt(aes_key, other), rowid))
-                conn.commit()
-                record = conn.execute("select *,rowid from passwords where rowid=?", (rowid,)).fetchone()
-                conn.close()
-                out += showResult((record,), aes_key)
+                record = (title, url, username, password, other)
+                updateById(rowid, appuser, aes_key, record)
+                out += html_message.format(message='Record updated.')
+                out += getById(rowid, appuser, aes_key)
             else:
-                conn = sqlite3.connect(pwdatabase)
-                record = conn.execute("select * from passwords where rowid=?", (rowid,)).fetchone()
-                conn.close()
-                out += html_editform.format(rowid=rowid, title=record[0], url=record[1], username=record[2], password=decrypt(aes_key, record[3]).decode(), other=decrypt(aes_key, record[4]).decode())
+                record = getValuesById(rowid, appuser, aes_key)
+                out += html_editform.format(rowid=rowid, title=record[0], url=record[1], username=record[2], password=record[3], other=record[4])
         return html_template.format(content=out)
     edit.exposed = True
 
