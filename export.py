@@ -20,12 +20,7 @@ if bcrypt.checkpw(password, pwHash):
     print('Password is correct.')
     aes_key = bcrypt.kdf(password, salt, 16, 32)
     records = [list(i) for i in conn.execute('select * from passwords')]
-    print(records)
-    print('Decrypting records.')
     for i in range(len(records)):
-        print('Record: ' + str(i))
-        print(records[i][3])
-        print(records[i][4])
         records[i][3] = decrypt(aes_key, records[i][3]).decode()
         records[i][4] = decrypt(aes_key, records[i][4]).decode()
     json.dump(records, jsonfile, indent=2)
