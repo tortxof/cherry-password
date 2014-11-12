@@ -85,7 +85,13 @@ html_setupform = '''\
     <form class="form-inline" role="form" name="setup" action="/setup" method="post">
 
       <div class="form-group">
-        <input class="form-control" type="password" name="password" autofocus>
+        <label>Username</label>
+        <input class="form-control" type="text" name="user" autofocus>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input class="form-control" type="password" name="password">
       </div>
 
       <button type="submit" class="btn btn-default">Set Password</button>
@@ -364,11 +370,11 @@ def mkPasswd():
     '''Returns generated password from pwgen command line utility.'''
     return subprocess.check_output(['pwgen','-cn','12','1']).decode().strip()
 
-def newDB(pwHash):
+def newDB(user, pwHash):
     conn = sqlite3.connect(pwdatabase)
-    conn.execute('create table passwords (title text, url text, username text, password text, other text)', ())
-    conn.execute('create table master_pass (password text, salt text)', ())
-    conn.execute('insert into master_pass values (?, ?)', (pwHash, os.urandom(16)))
+    conn.execute('create table passwords (title text, url text, username text, password text, other text, appuser text)')
+    conn.execute('create table master_pass (appuser text, password text, salt text)')
+    conn.execute('insert into master_pass values (?, ?, ?)', (user, pwHash, os.urandom(16)))
     conn.commit()
     conn.close()
 
@@ -384,18 +390,18 @@ class Root(object):
         return html_template.format(content=out)
     index.exposed = True
 
-    def setup(self, password=''):
+    def setup(self, user='', password=''):
         out = ''
         if os.path.isfile(pwdatabase):
             out += html_message.format(message='Database file already exists.')
             return html_template.format(content=out)
-        if not password:
+        if (not password) or (not user):
             out += html_message.format(message='No database file found. Setting up new database.')
             out += html_setupform
             return html_template.format(content=out)
         else:
             pwHash = bcrypt.hashpw(password, bcrypt.gensalt())
-            newDB(pwHash)
+            newDB(user, pwHash)
             out += html_message.format(message='New database has been created.')
             return html_template.format(content=out)
     setup.exposed = True
