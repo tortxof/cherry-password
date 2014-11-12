@@ -383,6 +383,7 @@ def getValuesById(rowid, appuser, aes_key):
     conn = sqlite3.connect(pwdatabase)
     record = conn.execute('select *,rowid from passwords where rowid=? and appuser=?', (rowid, appuser)).fetchone()
     conn.close()
+    record = list(record)
     record[3] = decrypt(aes_key, record[3]).decode()
     record[4] = decrypt(aes_key, record[4]).decode()
     return record
