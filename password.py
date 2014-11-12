@@ -259,7 +259,13 @@ html_login = '''\
     <form class="form-inline" role="form" name="login" action="/login" method="post">
 
       <div class="form-group">
-        <input class="form-control" type="password" name="password" autofocus>
+        <label>Username</label>
+        <input class="form-control" type="text" name="user" autofocus>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input class="form-control" type="password" name="password">
       </div>
 
       <button type="submit" class="btn btn-default">Login</button>
