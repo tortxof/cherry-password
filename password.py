@@ -60,6 +60,7 @@ html_template = '''\
         <ul class="nav navbar-nav">
           <li><a href="/">Home</a></li>
           <li><a href="/logout">Logout</a></li>
+          <li><a href="/newuser">New User</a></li>
           <li><a href="/genpass">Generate Password</a></li>
         </ul>
       </div>
@@ -83,6 +84,30 @@ html_setupform = '''\
   <div class="panel-body">
 
     <form role="form" name="setup" action="/setup" method="post">
+
+      <div class="form-group">
+        <label>Username</label>
+        <input class="form-control" type="text" name="user" autofocus>
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input class="form-control" type="password" name="password">
+      </div>
+
+      <button type="submit" class="btn btn-default">Set Password</button>
+
+    </form>
+
+  </div>
+</div>
+'''
+
+html_newuserform = '''\
+<div class="panel panel-default">
+  <div class="panel-body">
+
+    <form role="form" name="newuser" action="/newuser" method="post">
 
       <div class="form-group">
         <label>Username</label>
