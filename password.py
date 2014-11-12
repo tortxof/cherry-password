@@ -633,7 +633,8 @@ class Root(object):
         return html_template.format(content=out)
     edit.exposed = True
 
-    def import(self, json):
+    @cherrypy.expose('import')
+    def import_json(self, json):
         out = ''
         if not loggedIn():
             out += html_message.format(message='You are not logged in.') + html_login
