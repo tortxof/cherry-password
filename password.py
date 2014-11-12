@@ -374,7 +374,7 @@ def showResult(result, aes_key):
     '''Renders given results.'''
     out = ''
     for row in result:
-        out += html_results.format(headers=headers,title=row[0],url=row[1],username=row[2],password=decrypt(aes_key, row[3]).decode(),other=decrypt(aes_key, row[4]).decode(),rowid=row[5])
+        out += html_results.format(headers=headers,title=row[0],url=row[1],username=row[2],password=decrypt(aes_key, row[3]).decode(),other=decrypt(aes_key, row[4]).decode(),rowid=row[6])
     return out
 
 def mkPasswd():
