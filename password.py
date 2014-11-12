@@ -378,6 +378,11 @@ def getById(rowid, appuser, aes_key):
     conn.close()
     return result
 
+def deleteById(rowid, appuser):
+    '''Deletes record by rowid.'''
+    conn = sqlite3.connect(pwdatabase)
+    conn.execute('delete from passwords where rowid=? and appuser=?', (rowid, appuser))
+    conn.close()
 
 def showResult(result, aes_key):
     '''Renders given results.'''
@@ -501,19 +506,15 @@ class Root(object):
             out += html_message.format(message='You are not logged in.') + html_login
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
+            appuser = keyUser(cherrypy.request.cookie['auth'].value)
             if confirm == 'true':
-                conn = sqlite3.connect(pwdatabase)
                 out += html_message.format(message="Record deleted.")
-                out += showResult(conn.execute("select *,rowid from passwords where rowid=?", [rowid]), aes_key)
-                conn.execute("delete from passwords where rowid=?", [rowid])
-                conn.commit()
-                conn.close()
+                out += getById(rowid, appuser, aes_key)
+                deleteById(rowid, appuser)
             else:
-                conn = sqlite3.connect(pwdatabase)
                 out += html_message.format(message="Are you sure you want to delete this record?")
-                out += showResult(conn.execute("select *,rowid from passwords where rowid=?", [rowid]), aes_key)
+                out += getById(rowid, appuser, aes_key)
                 out += html_confirmdelete.format(rowid=rowid)
-                conn.close()
         return html_template.format(content=out)
     delete.exposed = True
 
