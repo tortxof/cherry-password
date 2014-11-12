@@ -371,6 +371,14 @@ def pwSearch(query, appuser, aes_key):
     conn.close()
     return result
 
+def getById(rowid, appuser, aes_key):
+    '''Returns single record by rowid.'''
+    conn = sqlite3.connect(pwdatabase)
+    result = showResult(conn.execute('select *,rowid from passwords where rowid=? and appuser=?', (rowid, appuser)), aes_key)
+    conn.close()
+    return result
+
+
 def showResult(result, aes_key):
     '''Renders given results.'''
     out = ''
@@ -481,7 +489,7 @@ class Root(object):
             rowid = cur.lastrowid
             conn.commit()
             out += html_message.format(message='Record added.')
-            out += showResult(conn.execute("select *,rowid from passwords where rowid=?", (rowid,)), aes_key)
+            out += getById(rowid, appuser, aes_key)
             conn.close()
             out += html_searchform
         return html_template.format(content=out)
