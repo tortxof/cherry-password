@@ -82,7 +82,7 @@ html_setupform = '''\
 <div class="panel panel-default">
   <div class="panel-body">
 
-    <form class="form-inline" role="form" name="setup" action="/setup" method="post">
+    <form role="form" name="setup" action="/setup" method="post">
 
       <div class="form-group">
         <label>Username</label>
