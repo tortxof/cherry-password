@@ -83,7 +83,7 @@ html_setupform = '''\
 <div class="panel panel-default">
   <div class="panel-body">
 
-    <form role="form" name="setup" action="/setup" method="post">
+    <form class="form-inline" role="form" name="setup" action="/setup" method="post">
 
       <div class="form-group">
         <label>Username</label>
@@ -107,7 +107,7 @@ html_newuserform = '''\
 <div class="panel panel-default">
   <div class="panel-body">
 
-    <form role="form" name="newuser" action="/newuser" method="post">
+    <form class="form-inline" role="form" name="newuser" action="/newuser" method="post">
 
       <div class="form-group">
         <label>Username</label>
