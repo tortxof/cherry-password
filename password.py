@@ -363,10 +363,11 @@ def keyValid(key):
     authKeys[key] = (keyUser(key), now)
     return True
 
-def pwSearch(query, aes_key):
+def pwSearch(query, appuser, aes_key):
     '''Returns results of search.'''
+    query = '%{}%'.format(query)
     conn = sqlite3.connect(pwdatabase)
-    result = showResult(conn.execute("select *,rowid from passwords where title like ?", ['%{}%'.format(query)]), aes_key)
+    result = showResult(conn.execute('select *,rowid from passwords where appuser=? and title like ?', (appuser, query)), aes_key)
     conn.close()
     return result
 
@@ -459,7 +460,8 @@ class Root(object):
             out += html_message.format(message='You are not logged in.') + html_login
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
-            out += html_searchform + pwSearch(query, aes_key)
+            appuser = keyUser(cherrypy.request.cookie['auth'].value)
+            out += html_searchform + pwSearch(query, appuser, aes_key)
         return html_template.format(content=out)
     search.exposed = True
 
