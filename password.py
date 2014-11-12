@@ -7,6 +7,7 @@ import bcrypt
 import hashlib
 from Crypto.Cipher import AES
 import codecs
+import json
 import cherrypy
 import time
 
@@ -120,6 +121,24 @@ html_newuserform = '''\
       </div>
 
       <button type="submit" class="btn btn-default">Set Password</button>
+
+    </form>
+
+  </div>
+</div>
+'''
+
+html_importform = '''\
+<div class="panel panel-default">
+  <div class="panel-body">
+
+    <form role="form" name="import" action="/import" method="post">
+
+      <div class="form-group">
+        <textarea class="form-control" name="json"></textarea>
+      </div>
+
+      <button type="submit" class="btn btn-default">Import</button>
 
     </form>
 
@@ -442,6 +461,17 @@ def mkPasswd():
     '''Returns generated password from pwgen command line utility.'''
     return subprocess.check_output(['pwgen','-cn','12','1']).decode().strip()
 
+def importJson(appuser, aes_key, json_data):
+    records = json.loads(json_data)
+    conn = sqlite3.connect(pwdatabase)
+    for record in records:
+        title, url, username, password, other = record
+        password = encrypt(aes_key, password)
+        other = encrypt(aes_key, other)
+        conn.execute('insert into passwords values (?, ?, ?, ?, ?, ?)', (title, url, username, password, other, appuser))
+    conn.commit()
+    conn.close()
+
 def newAppUser(user, password):
     pwHash = bcrypt.hashpw(password, bcrypt.gensalt())
     conn = sqlite3.connect(pwdatabase)
@@ -602,6 +632,20 @@ class Root(object):
                 out += html_editform.format(rowid=rowid, title=record[0], url=record[1], username=record[2], password=record[3], other=record[4])
         return html_template.format(content=out)
     edit.exposed = True
+
+    def import(self, json):
+        out = ''
+        if not loggedIn():
+            out += html_message.format(message='You are not logged in.') + html_login
+        if not json:
+            out += html_message.format(message='Enter json data to import.')
+            out += html_importform
+        else:
+            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
+            appuser = keyUser(cherrypy.request.cookie['auth'].value)
+            importJson(appuser, aes_key, json)
+            out += html_message.format(message='Json data imported.')
+        return html_template.format(content=out)
 
 if __name__ == "__main__":
     cherrypy.quickstart(Root(), '/', 'app.conf')
