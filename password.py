@@ -417,13 +417,20 @@ def mkPasswd():
     '''Returns generated password from pwgen command line utility.'''
     return subprocess.check_output(['pwgen','-cn','12','1']).decode().strip()
 
-def newDB(user, pwHash):
+def newAppUser(user, password):
+    pwHash = bcrypt.hashpw(password, bcrypt.gensalt())
     conn = sqlite3.connect(pwdatabase)
-    conn.execute('create table passwords (title text, url text, username text, password text, other text, appuser text)')
-    conn.execute('create table master_pass (appuser text primary key not null, password text, salt text)')
     conn.execute('insert into master_pass values (?, ?, ?)', (user, pwHash, os.urandom(16)))
     conn.commit()
     conn.close()
+
+def newDB(user, password):
+    conn = sqlite3.connect(pwdatabase)
+    conn.execute('create table passwords (title text, url text, username text, password text, other text, appuser text)')
+    conn.execute('create table master_pass (appuser text primary key not null, password text, salt text)')
+    conn.commit()
+    conn.close()
+    newAppUser(user, password)
 
 class Root(object):
     def index(self):
@@ -447,11 +454,24 @@ class Root(object):
             out += html_setupform
             return html_template.format(content=out)
         else:
-            pwHash = bcrypt.hashpw(password, bcrypt.gensalt())
-            newDB(user, pwHash)
+            newDB(user, password)
             out += html_message.format(message='New database has been created.')
+            out += html_login
             return html_template.format(content=out)
     setup.exposed = True
+
+    def newuser(self, user='', password=''):
+        out = ''
+        if (not password) or (not user):
+            out += html_message.format(message='Create a new user.')
+            out += html_newuserform
+            return html_template.format(content=out)
+        else:
+            newAppUser(user, password)
+            out += html_message.format(message='New database has been created.')
+            out += html_login
+            return html_template.format(content=out)
+    newuser.exposed = True
 
     def genpass(self):
         return html_template.format(content=html_message.format(message=mkPasswd()))
