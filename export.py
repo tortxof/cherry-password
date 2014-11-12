@@ -28,7 +28,7 @@ if bcrypt.checkpw(password, pwHash):
         print(records[i][4])
         records[i][3] = decrypt(aes_key, records[i][3]).decode()
         records[i][4] = decrypt(aes_key, records[i][4]).decode()
-    json.dump(records,jsonfile)
+    json.dump(records, jsonfile, indent=2)
 else:
     print('Incorrect password.')
 
