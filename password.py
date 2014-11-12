@@ -62,6 +62,7 @@ html_template = '''\
           <li><a href="/">Home</a></li>
           <li><a href="/logout">Logout</a></li>
           <li><a href="/newuser">New User</a></li>
+          <li><a href="/import">Import</a></li>
           <li><a href="/genpass">Generate Password</a></li>
         </ul>
       </div>
