@@ -325,11 +325,11 @@ def nowUnixInt():
     '''Return int unix time.'''
     return int(time.time())
 
-def newKey():
+def newKey(user):
     '''Creates new key, adds it to database with timestamp, and returns it.'''
     key = genHex()
     date = nowUnixInt()
-    authKeys[key] = date
+    authKeys[key] = (user, date)
     return key
 
 def delKey(key):
@@ -339,17 +339,22 @@ def delKey(key):
         return True
     return False
 
+def keyUser(key):
+    '''Return appuser for given key.'''
+    if key in authKeys:
+        return authKeys[key][0]
+
 def keyValid(key):
     '''Return True if key is in database and is not expired. Updates timestamp if key is valid.'''
     now = nowUnixInt()
     exp_date = now - keyExpTime
     keys = [key for key in authKeys.keys()]
     for i in keys:
-        if authKeys[i] < exp_date:
+        if authKeys[i][1] < exp_date:
           del authKeys[i]
     if key not in authKeys:
         return False
-    authKeys[key] = now
+    authKeys[key] = (keyUser(key), now)
     return True
 
 def pwSearch(query, aes_key):
@@ -373,7 +378,7 @@ def mkPasswd():
 def newDB(user, pwHash):
     conn = sqlite3.connect(pwdatabase)
     conn.execute('create table passwords (title text, url text, username text, password text, other text, appuser text)')
-    conn.execute('create table master_pass (appuser text, password text, salt text)')
+    conn.execute('create table master_pass (appuser text primary key not null, password text, salt text)')
     conn.execute('insert into master_pass values (?, ?, ?)', (user, pwHash, os.urandom(16)))
     conn.commit()
     conn.close()
@@ -410,16 +415,16 @@ class Root(object):
         return html_template.format(content=html_message.format(message=mkPasswd()))
     genpass.exposed = True
 
-    def login(self, password=''):
+    def login(self, user='', password=''):
         out = ''
         conn = sqlite3.connect(pwdatabase)
-        master_pass = [i for i in conn.execute("select * from master_pass", ())]
+        master_pass = [i for i in conn.execute("select * from master_pass where appuser=?", (user,))]
         conn.close()
-        pwHash = master_pass[0][0]
-        salt = master_pass[0][1]
+        pwHash = master_pass[0][1]
+        salt = master_pass[0][2]
         if bcrypt.checkpw(password, pwHash):
             cookie = cherrypy.response.cookie
-            cookie['auth'] = newKey()
+            cookie['auth'] = newKey(user)
             cookie['aes_key'] = toHex(bcrypt.kdf(password, salt, 16, 32))
             out += html_message.format(message='You are now logged in.') + html_searchform + html_addform
         else:
