@@ -9,7 +9,7 @@ import json
 from password import encrypt, decrypt, toHex, fromHex
 
 pwdatabase = 'passwords.db'
-jsonfile = open('passwords.json', mode=w)
+jsonfile = open('passwords.json', mode='w')
 
 password = input('Enter password: ')
 
