@@ -436,7 +436,7 @@ def getValuesById(rowid, appuser, aes_key):
 def getAllValues(appuser, aes_key):
     '''Returns all records for appuser.'''
     conn = sqlite3.connect(pwdatabase)
-    records = [list(i) for i in conn.execute('select * from passwords where appuser=?', (appuser,))]
+    records = [list(i) for i in conn.execute('select title, url, username, password, other from passwords where appuser=?', (appuser,))]
     conn.close()
     for i in range(len(records)):
         records[i][3] = decrypt(aes_key, records[i][3]).decode()
