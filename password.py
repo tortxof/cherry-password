@@ -411,9 +411,8 @@ def keyValid(key):
 
 def pwSearch(query, appuser, aes_key):
     '''Returns results of search.'''
-    query = '%{}%'.format(query)
     conn = sqlite3.connect(pwdatabase)
-    result = showResult(conn.execute('select *,rowid from passwords where appuser=? and title like ?', (appuser, query)), aes_key)
+    result = showResult(conn.execute('select *,rowid from passwords where appuser=? and passwords match ?', (appuser, query)), aes_key)
     conn.close()
     return result
 
@@ -493,7 +492,7 @@ def newAppUser(user, password):
 
 def newDB(user, password):
     conn = sqlite3.connect(pwdatabase)
-    conn.execute('create table passwords (title text, url text, username text, password text, other text, appuser text)')
+    conn.execute('create virtual table passwords using fts4(title, url, username, password, other, appuser, notindexed=password, notindexed=other, notindexed=appuser)')
     conn.execute('create table master_pass (appuser text primary key not null, password text, salt text)')
     conn.commit()
     conn.close()
