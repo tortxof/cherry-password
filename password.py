@@ -433,6 +433,16 @@ def getValuesById(rowid, appuser, aes_key):
     record[4] = decrypt(aes_key, record[4]).decode()
     return record
 
+def getAllValues(appuser, aes_key):
+    '''Returns all records for appuser.'''
+    conn = sqlite3.connect(pwdatabase)
+    records = [list(i) for i in conn.execute('select * from passwords where appuser=?', (appuser,))]
+    conn.close()
+    for i in range(len(records)):
+        records[i][3] = decrypt(aes_key, records[i][3]).decode()
+        records[i][4] = decrypt(aes_key, records[i][4]).decode()
+    return records
+
 def deleteById(rowid, appuser):
     '''Deletes record by rowid.'''
     conn = sqlite3.connect(pwdatabase)
@@ -648,6 +658,16 @@ class Root(object):
             importJson(appuser, aes_key, json)
             out += html_message.format(message='Json data imported.')
         return html_template.format(content=out)
+
+    @cherrypy.expose()
+    def export(self):
+        if not loggedIn():
+            out = html_message.format(message='You are not logged in.') + html_login
+            return html_template.format(content=out)
+        else:
+            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
+            appuser = keyUser(cherrypy.request.cookie['auth'].value)
+            return json.dumps(getAllValues(appuser, aes_key))
 
 if __name__ == "__main__":
     cherrypy.quickstart(Root(), '/', 'app.conf')
