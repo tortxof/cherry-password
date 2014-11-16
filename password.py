@@ -667,7 +667,7 @@ class Root(object):
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
             appuser = keyUser(cherrypy.request.cookie['auth'].value)
-            return json.dumps(getAllValues(appuser, aes_key))
+            return json.dumps(getAllValues(appuser, aes_key), indent=2)
 
 if __name__ == "__main__":
     cherrypy.quickstart(Root(), '/', 'app.conf')
