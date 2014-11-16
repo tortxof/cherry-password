@@ -60,6 +60,7 @@ html_template = '''\
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
           <li><a href="/">Home</a></li>
+          <li><a href="/all">All</a></li>
           <li><a href="/logout">Logout</a></li>
           <li><a href="/newuser">New User</a></li>
           <li><a href="/import">Import</a></li>
@@ -433,8 +434,15 @@ def getValuesById(rowid, appuser, aes_key):
     record[4] = decrypt(aes_key, record[4]).decode()
     return record
 
+def getAll(appuser, aes_key):
+    '''Return all records for appuser'''
+    conn = sqlite3.connect(pwdatabase)
+    result = showResult(conn.execute('select *,rowid from passwords where appuser=?', (appuser,)), aes_key)
+    conn.close()
+    return result
+
 def getAllValues(appuser, aes_key):
-    '''Returns all records for appuser.'''
+    '''Returns all records values for appuser.'''
     conn = sqlite3.connect(pwdatabase)
     records = [list(i) for i in conn.execute('select title, url, username, password, other from passwords where appuser=?', (appuser,))]
     conn.close()
@@ -574,6 +582,17 @@ class Root(object):
         out += html_login
         return html_template.format(content=out)
     logout.exposed = True
+
+    @cherrypy.expose('all')
+    def all_records(self):
+        out = ''
+        if not loggedIn():
+            out += html_message.format(message='You are not logged in.') + html_login
+        else:
+            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
+            appuser = keyUser(cherrypy.request.cookie['auth'].value)
+            out += getAll(appuser, aes_key)
+        return html_template.format(content=out)
 
     def search(self, query=''):
         out = ''
