@@ -67,7 +67,7 @@ html_template = '''\
               <span class="caret"></span>
               <ul class="dropdown-menu" role="menu">
                 <li><a href="/newuser">New User</a></li>
-                <li><a href="/all">All</a></li>
+                <li><a href="/all">Show All Records</a></li>
                 <li><a href="/import">Import</a></li>
                 <li><a href="/export">Export</a></li>
                 <li><a href="/genpass">Generate Password</a></li>
