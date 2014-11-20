@@ -275,24 +275,24 @@ html_results = """\
 <div class="panel panel-default">
   <div class="panel-body">
     <div class="row">
-      <div class="col-md-4"><strong>{headers[0]}</strong></div>
-      <div class="col-md-8">{title}</div>
+      <div class="col-sm-4"><strong>{headers[0]}</strong></div>
+      <div class="col-sm-8">{title}</div>
     </div>
     <div class="row">
-      <div class="col-md-4"><strong>{headers[1]}</strong></div>
-      <div class="col-md-8"><a target="_blank" href="{url}">{url}</a></div>
+      <div class="col-sm-4"><strong>{headers[1]}</strong></div>
+      <div class="col-sm-8"><a target="_blank" href="{url}">{url}</a></div>
     </div>
     <div class="row">
-      <div class="col-md-4"><strong>{headers[2]}</strong></div>
-      <div class="col-md-8">{username}</div>
+      <div class="col-sm-4"><strong>{headers[2]}</strong></div>
+      <div class="col-sm-8">{username}</div>
     </div>
     <div class="row">
-      <div class="col-md-4"><strong>{headers[3]}</strong></div>
-      <div class="col-md-8"><samp>{password}</samp></div>
+      <div class="col-sm-4"><strong>{headers[3]}</strong></div>
+      <div class="col-sm-8"><samp>{password}</samp></div>
     </div>
     <div class="row">
-      <div class="col-md-4"><strong>{headers[4]}</strong></div>
-      <div class="col-md-8"><pre>{other}</pre></div>
+      <div class="col-sm-4"><strong>{headers[4]}</strong></div>
+      <div class="col-sm-8"><pre>{other}</pre></div>
     </div>
   </div>
   <div class="panel-footer"><a href="/delete?rowid={rowid}">Delete</a> - <a href="/edit?rowid={rowid}">Edit</a></div>
