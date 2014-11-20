@@ -23,7 +23,7 @@ login_attempts_allowed = 3
 cherrypy.config.update('server.conf')
 
 # Set key expiration time in seconds
-keyExpTime = 60 * 5
+keyExpTime = 60 * 15
 
 html_template = '''\
 <!DOCTYPE html>
