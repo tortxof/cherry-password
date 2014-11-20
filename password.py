@@ -274,13 +274,26 @@ html_editform = '''\
 html_results = """\
 <div class="panel panel-default">
   <div class="panel-body">
-    <table class="table table-bordered">
-      <tr><td>{headers[0]}:</td><td>{title}</td></tr>
-      <tr><td>{headers[1]}:</td><td><a target="_blank" href="{url}">{url}</a></td></tr>
-      <tr><td>{headers[2]}:</td><td>{username}</td></tr>
-      <tr><td>{headers[3]}:</td><td class="password">{password}</td></tr>
-      <tr><td>{headers[4]}:</td><td><pre>{other}</pre></td></tr>
-    </table>
+    <div class="row">
+      <div class="col-md-4"><strong>{headers[0]}</strong></div>
+      <div class="col-md-8">{title}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-4"><strong>{headers[1]}</strong></div>
+      <div class="col-md-8"><a target="_blank" href="{url}">{url}</a></div>
+    </div>
+    <div class="row">
+      <div class="col-md-4"><strong>{headers[2]}</strong></div>
+      <div class="col-md-8">{username}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-4"><strong>{headers[3]}</strong></div>
+      <div class="col-md-8"><samp>{password}</samp></div>
+    </div>
+    <div class="row">
+      <div class="col-md-4"><strong>{headers[4]}</strong></div>
+      <div class="col-md-8"><pre>{other}</pre></div>
+    </div>
   </div>
   <div class="panel-footer"><a href="/delete?rowid={rowid}">Delete</a> - <a href="/edit?rowid={rowid}">Edit</a></div>
 </div>
