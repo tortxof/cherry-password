@@ -60,12 +60,20 @@ html_template = '''\
       <div id="navbar" class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
           <li><a href="/">Home</a></li>
-          <li><a href="/all">All</a></li>
           <li><a href="/logout">Logout</a></li>
-          <li><a href="/newuser">New User</a></li>
-          <li><a href="/import">Import</a></li>
-          <li><a href="/export">Export</a></li>
-          <li><a href="/genpass">Generate Password</a></li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" href="#">
+              <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+              <span class="caret"></span>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="/newuser">New User</a></li>
+                <li><a href="/all">All</a></li>
+                <li><a href="/import">Import</a></li>
+                <li><a href="/export">Export</a></li>
+                <li><a href="/genpass">Generate Password</a></li>
+              </ul>
+            </a>
+          </li>
         </ul>
       </div>
     </div>
