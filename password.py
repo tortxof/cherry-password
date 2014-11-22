@@ -299,7 +299,7 @@ html_results = """\
   </div>
   <div class="panel-footer">
     <a href="/delete?rowid={rowid}"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
-    <span class="glyphicon glyphicon-minus" aria-hidden="true">
+    <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
     <a href="/edit?rowid={rowid}"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
   </div>
 </div>
