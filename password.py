@@ -297,7 +297,10 @@ html_results = """\
       <div class="col-sm-9"><pre>{other}</pre></div>
     </div>
   </div>
-  <div class="panel-footer"><a href="/delete?rowid={rowid}">Delete</a> - <a href="/edit?rowid={rowid}">Edit</a></div>
+  <div class="panel-footer">
+    <a href="/delete?rowid={rowid}"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+    <a href="/edit?rowid={rowid}"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+  </div>
 </div>
 """
 
