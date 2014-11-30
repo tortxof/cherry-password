@@ -518,6 +518,15 @@ def importJson(appuser, aes_key, json_data):
     conn.commit()
     conn.close()
 
+def existsAppUser(user):
+    conn = sqlite3.connect(pwdatabase)
+    existing_user = conn.execute('select appuser from master_pass where appuser=?', (user,)).fetchall()
+    conn.close()
+    if len(existing_user) > 0:
+        return True
+    else:
+        return False
+
 def newAppUser(user, password):
     pwHash = bcrypt.hashpw(password, bcrypt.gensalt())
     conn = sqlite3.connect(pwdatabase)
