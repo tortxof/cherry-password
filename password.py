@@ -215,7 +215,7 @@ def showResult(result, aes_key):
     '''Renders given results.'''
     out = ''
     for row in result:
-        out += html_results.format(headers=headers,title=row[0],url=row[1],username=row[2],password=decrypt(aes_key, row[3]).decode(),other=decrypt(aes_key, row[4]).decode(),rowid=row[6])
+        out += html['results'].format(headers=headers,title=row[0],url=row[1],username=row[2],password=decrypt(aes_key, row[3]).decode(),other=decrypt(aes_key, row[4]).decode(),rowid=row[6])
     return out
 
 def mkPasswd():
@@ -263,45 +263,45 @@ class Root(object):
         if not os.path.isfile(pwdatabase):
             raise cherrypy.HTTPRedirect('/setup')
         if not loggedIn():
-            out += html_login
+            out += html['login']
         else:
-            out += html_searchform + html_addform
-        return html_template.format(content=out)
+            out += html['searchform'] + html['addform']
+        return html['template'].format(content=out)
     index.exposed = True
 
     def setup(self, user='', password=''):
         out = ''
         if os.path.isfile(pwdatabase):
-            out += html_message.format(message='Database file already exists.')
-            return html_template.format(content=out)
+            out += html['message'].format(message='Database file already exists.')
+            return html['template'].format(content=out)
         if (not password) or (not user):
-            out += html_message.format(message='No database file found. Setting up new database.')
-            out += html_setupform
-            return html_template.format(content=out)
+            out += html['message'].format(message='No database file found. Setting up new database.')
+            out += html['setupform']
+            return html['template'].format(content=out)
         else:
             newDB(user, password)
-            out += html_message.format(message='New database has been created.')
-            out += html_login
-            return html_template.format(content=out)
+            out += html['message'].format(message='New database has been created.')
+            out += html['login']
+            return html['template'].format(content=out)
     setup.exposed = True
 
     def newuser(self, user='', password=''):
         out = ''
         if (not password) or (not user):
-            out += html_message.format(message='Create a new user.')
-            out += html_newuserform
+            out += html['message'].format(message='Create a new user.')
+            out += html['newuserform']
         elif existsAppUser(user):
-            out += html_message.format(message='That user already exists.')
-            out += html_newuserform
+            out += html['message'].format(message='That user already exists.')
+            out += html['newuserform']
         else:
             newAppUser(user, password)
-            out += html_message.format(message='New user has been created.')
-            out += html_login
-        return html_template.format(content=out)
+            out += html['message'].format(message='New user has been created.')
+            out += html['login']
+        return html['template'].format(content=out)
     newuser.exposed = True
 
     def genpass(self):
-        return html_template.format(content=html_message.format(message=mkPasswd()))
+        return html['template'].format(content=html['message'].format(message=mkPasswd()))
     genpass.exposed = True
 
     def login(self, user='', password=''):
@@ -309,19 +309,19 @@ class Root(object):
         if user:
             pwHash, salt = getMasterPass(user)
         else:
-            out += html_message.format(message='You must supply your username.')
-            out += html_login
-            return html_template.format(content=out)
+            out += html['message'].format(message='You must supply your username.')
+            out += html['login']
+            return html['template'].format(content=out)
         if salt and passwordValid(user, password):
             cookie = cherrypy.response.cookie
             cookie['auth'] = newKey(user)
             cookie['aes_key'] = toHex(bcrypt.kdf(password, salt, 16, 32))
-            out += html_message.format(message='You are now logged in.')
-            out += html_searchform + html_addform
+            out += html['message'].format(message='You are now logged in.')
+            out += html['searchform'] + html['addform']
         else:
             failedLogin()
-            out += html_message.format(message='Login failed.') + html_login
-        return html_template.format(content=out)
+            out += html['message'].format(message='Login failed.') + html['login']
+        return html['template'].format(content=out)
     login.exposed = True
 
     def logout(self):
@@ -329,41 +329,41 @@ class Root(object):
         cookie = cherrypy.request.cookie
         if 'auth' in cookie.keys():
             if delKey(cookie['auth'].value):
-                out += html_message.format(message='You are now logged out.')
+                out += html['message'].format(message='You are now logged out.')
             else:
-                out += html_message.format(message='Auth key not found.')
+                out += html['message'].format(message='Auth key not found.')
         else:
-            out += html_message.format(message='You were not logged in.')
-        out += html_login
-        return html_template.format(content=out)
+            out += html['message'].format(message='You were not logged in.')
+        out += html['login']
+        return html['template'].format(content=out)
     logout.exposed = True
 
     @cherrypy.expose('all')
     def all_records(self):
         out = ''
         if not loggedIn():
-            out += html_message.format(message='You are not logged in.') + html_login
+            out += html['message'].format(message='You are not logged in.') + html['login']
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
             appuser = keyUser(cherrypy.request.cookie['auth'].value)
             out += getAll(appuser, aes_key)
-        return html_template.format(content=out)
+        return html['template'].format(content=out)
 
     def search(self, query=''):
         out = ''
         if not loggedIn():
-            out += html_message.format(message='You are not logged in.') + html_login
+            out += html['message'].format(message='You are not logged in.') + html['login']
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
             appuser = keyUser(cherrypy.request.cookie['auth'].value)
-            out += html_searchform + pwSearch(query, appuser, aes_key)
-        return html_template.format(content=out)
+            out += html['searchform'] + pwSearch(query, appuser, aes_key)
+        return html['template'].format(content=out)
     search.exposed = True
 
     def add(self, title, url='', username='', other=''):
         out = ''
         if not loggedIn():
-            out += html_message.format(message='You are not logged in.') + html_login
+            out += html['message'].format(message='You are not logged in.') + html['login']
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
             appuser = keyUser(cherrypy.request.cookie['auth'].value)
@@ -375,57 +375,57 @@ class Root(object):
             cur.execute('insert into passwords values (?, ?, ?, ?, ?, ?)', newrecord)
             rowid = cur.lastrowid
             conn.commit()
-            out += html_message.format(message='Record added.')
+            out += html['message'].format(message='Record added.')
             out += getById(rowid, appuser, aes_key)
             conn.close()
-            out += html_searchform
-        return html_template.format(content=out)
+            out += html['searchform']
+        return html['template'].format(content=out)
     add.exposed = True
 
     def delete(self, rowid, confirm=''):
         out = ''
         if not loggedIn():
-            out += html_message.format(message='You are not logged in.') + html_login
+            out += html['message'].format(message='You are not logged in.') + html['login']
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
             appuser = keyUser(cherrypy.request.cookie['auth'].value)
             if confirm == 'true':
-                out += html_message.format(message="Record deleted.")
+                out += html['message'].format(message="Record deleted.")
                 out += getById(rowid, appuser, aes_key)
                 deleteById(rowid, appuser)
             else:
-                out += html_message.format(message="Are you sure you want to delete this record?")
+                out += html['message'].format(message="Are you sure you want to delete this record?")
                 out += getById(rowid, appuser, aes_key)
-                out += html_confirmdelete.format(rowid=rowid)
-        return html_template.format(content=out)
+                out += html['confirmdelete'].format(rowid=rowid)
+        return html['template'].format(content=out)
     delete.exposed = True
 
     def edit(self, rowid, confirm='', title='', url='', username='', password='', other=''):
         out = ''
         if not loggedIn():
-            out += html_message.format(message='You are not logged in.') + html_login
+            out += html['message'].format(message='You are not logged in.') + html['login']
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
             appuser = keyUser(cherrypy.request.cookie['auth'].value)
             if confirm == 'true':
                 record = (title, url, username, password, other)
                 updateById(rowid, appuser, aes_key, record)
-                out += html_message.format(message='Record updated.')
+                out += html['message'].format(message='Record updated.')
                 out += getById(rowid, appuser, aes_key)
             else:
                 record = getValuesById(rowid, appuser, aes_key)
-                out += html_editform.format(rowid=rowid, title=record[0], url=record[1], username=record[2], password=record[3], other=record[4])
-        return html_template.format(content=out)
+                out += html['editform'].format(rowid=rowid, title=record[0], url=record[1], username=record[2], password=record[3], other=record[4])
+        return html['template'].format(content=out)
     edit.exposed = True
 
     @cherrypy.expose()
     def changepw(self, oldpw='', newpw1='', newpw2=''):
         out = ''
         if not loggedIn():
-            out += html_message.format(message='You are not logged in.') + html_login
+            out += html['message'].format(message='You are not logged in.') + html['login']
         elif not oldpw:
-            out += html_message.format(message='Change your master password. You may want to export your data first, just in case.')
-            out += html_changemasterpassform
+            out += html['message'].format(message='Change your master password. You may want to export your data first, just in case.')
+            out += html['changemasterpassform']
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
             auth = cherrypy.request.cookie['auth'].value
@@ -433,33 +433,33 @@ class Root(object):
             if passwordValid(appuser, oldpw) and (newpw1 == newpw2) and (newpw1 != ''):
                 changeMasterPass(appuser, aes_key, newpw1)
                 delKey(auth)
-                out += html_message.format(message='Your master password has been changed. Please log back in.')
-                out += html_login
+                out += html['message'].format(message='Your master password has been changed. Please log back in.')
+                out += html['login']
             else:
-                out += html_message.format(message='One of the passwords entered was incorrect.')
-                out += html_changemasterpassform
-        return html_template.format(content=out)
+                out += html['message'].format(message='One of the passwords entered was incorrect.')
+                out += html['changemasterpassform']
+        return html['template'].format(content=out)
 
     @cherrypy.expose('import')
     def import_json(self, json=''):
         out = ''
         if not loggedIn():
-            out += html_message.format(message='You are not logged in.') + html_login
+            out += html['message'].format(message='You are not logged in.') + html['login']
         elif not json:
-            out += html_message.format(message='Enter json data to import.')
-            out += html_importform
+            out += html['message'].format(message='Enter json data to import.')
+            out += html['importform']
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
             appuser = keyUser(cherrypy.request.cookie['auth'].value)
             importJson(appuser, aes_key, json)
-            out += html_message.format(message='Json data imported.')
-        return html_template.format(content=out)
+            out += html['message'].format(message='Json data imported.')
+        return html['template'].format(content=out)
 
     @cherrypy.expose()
     def export(self):
         if not loggedIn():
-            out = html_message.format(message='You are not logged in.') + html_login
-            return html_template.format(content=out)
+            out = html['message'].format(message='You are not logged in.') + html['login']
+            return html['template'].format(content=out)
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
             appuser = keyUser(cherrypy.request.cookie['auth'].value)
