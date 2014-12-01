@@ -326,6 +326,25 @@ html_confirmdelete = '''\
 </div>
 '''
 
+html_changemasterpassform = '''\
+<div class="panel panel-default">
+  <div class="panel-body">
+
+    <form class="form-inline" role="form" name="changepw" action="/changepw" method="post">
+
+      <div class="form-group">
+        <label>Password</label>
+        <input class="form-control" type="password" name="password" autofocus>
+      </div>
+
+      <button type="submit" class="btn btn-default">Change Password</button>
+
+    </form>
+
+  </div>
+</div>
+'''
+
 html_login = '''\
 <div class="panel panel-default">
   <div class="panel-body">
@@ -494,7 +513,22 @@ def updateById(rowid, appuser, aes_key, record):
     conn.execute('update passwords set title=?, url=?, username=?, password=?, other=? where rowid=? and appuser=?', (title, url, username, password, other, rowid, appuser))
     conn.commit()
     conn.close()
-    pass
+
+def changeMasterPass(appuser, aes_key, newPass):
+    '''Change users master password. '''
+    newPWHash = bcrypt.hashpw(newPass, bcrypt.gensalt())
+    newSalt = os.urandom(16)
+    new_aes_key = bcrypt.kdf(newPass, newSalt, 16, 32)
+    conn = sqlite3.connect(pwdatabase)
+    rowids = [i[0] for i in conn.execute('select rowid from passwords where appuser=?', (appuser,)).fetchall()]
+    for rowid in rowids:
+        password, other = conn.execute('select password, other from passwords where rowid=?', (rowid,)).fetchone()
+        password = encrypt(new_aes_key, decrypt(aes_key, password))
+        other = encrypt(new_aes_key, decrypt(aes_key, other))
+        conn.execute('update passwords set password=?, other=? where rowid=?', (password, other, rowid))
+    conn.execute('update master_pass set password=?, salt=? where appuser=?', (newPWHash, newSalt, appuser))
+    conn.commit()
+    conn.close()
 
 def showResult(result, aes_key):
     '''Renders given results.'''
@@ -700,6 +734,24 @@ class Root(object):
                 out += html_editform.format(rowid=rowid, title=record[0], url=record[1], username=record[2], password=record[3], other=record[4])
         return html_template.format(content=out)
     edit.exposed = True
+
+    @cherrypy.expose()
+    def changepw(self, password=''):
+        out = ''
+        if not loggedIn():
+            out += html_message.format(message='You are not logged in.') + html_login
+        elif not password:
+            out += html_message.format(message='Change your master password.')
+            out += html_changemasterpassform
+        else:
+            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
+            auth = cherrypy.request.cookie['auth'].value
+            appuser = keyUser(auth)
+            changeMasterPass(appuser, aes_key, password)
+            delKey(auth)
+            out += html_message.format(message='Your master password has been changed. Please log back in.')
+            out += html_login
+        return html_template.format(content=out)
 
     @cherrypy.expose('import')
     def import_json(self, json=''):
