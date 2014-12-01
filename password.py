@@ -334,8 +334,18 @@ html_changemasterpassform = '''\
     <form class="form-inline" role="form" name="changepw" action="/changepw" method="post">
 
       <div class="form-group">
-        <label>Password</label>
-        <input class="form-control" type="password" name="password" autofocus>
+        <label>Old Password</label>
+        <input class="form-control" type="password" name="oldpw" autofocus>
+      </div>
+
+      <div class="form-group">
+        <label>New Password</label>
+        <input class="form-control" type="password" name="newpw1">
+      </div>
+
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <input class="form-control" type="password" name="newpw2">
       </div>
 
       <button type="submit" class="btn btn-default">Change Password</button>
@@ -757,21 +767,25 @@ class Root(object):
     edit.exposed = True
 
     @cherrypy.expose()
-    def changepw(self, password=''):
+    def changepw(self, oldpw='', newpw1='', newpw2=''):
         out = ''
         if not loggedIn():
             out += html_message.format(message='You are not logged in.') + html_login
-        elif not password:
+        elif not oldpw:
             out += html_message.format(message='Change your master password. You may want to export your data first, just in case.')
             out += html_changemasterpassform
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
             auth = cherrypy.request.cookie['auth'].value
             appuser = keyUser(auth)
-            changeMasterPass(appuser, aes_key, password)
-            delKey(auth)
-            out += html_message.format(message='Your master password has been changed. Please log back in.')
-            out += html_login
+            if passwordValid(appuser, oldpw) and (newpw1 == newpw2) and (newpw1 != ''):
+                changeMasterPass(appuser, aes_key, newpw1)
+                delKey(auth)
+                out += html_message.format(message='Your master password has been changed. Please log back in.')
+                out += html_login
+            else:
+                out += html_message.format(message='One of the passwords entered was incorrect.')
+                out += html_changemasterpassform
         return html_template.format(content=out)
 
     @cherrypy.expose('import')
