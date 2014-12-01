@@ -393,7 +393,10 @@ def decrypt(key, data):
 def getMasterPass(appuser):
     '''Returns pwHash and salt for appuser.'''
     conn = sqlite3.connect(pwdatabase)
-    pwHash, salt = conn.execute('select password, salt from master_pass where appuser=?', (appuser,)).fetchone()
+    try:
+        pwHash, salt = conn.execute('select password, salt from master_pass where appuser=?', (appuser,)).fetchone()
+    except TypeError:
+        pwHash = salt = None
     conn.close()
     return pwHash, salt
 
@@ -647,7 +650,7 @@ class Root(object):
             out += html_message.format(message='You must supply your username.')
             out += html_login
             return html_template.format(content=out)
-        if passwordValid(user, password):
+        if salt and passwordValid(user, password):
             cookie = cherrypy.response.cookie
             cookie['auth'] = newKey(user)
             cookie['aes_key'] = toHex(bcrypt.kdf(password, salt, 16, 32))
