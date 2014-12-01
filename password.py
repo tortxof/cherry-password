@@ -331,21 +331,27 @@ html_changemasterpassform = '''\
 <div class="panel panel-default">
   <div class="panel-body">
 
-    <form class="form-inline" role="form" name="changepw" action="/changepw" method="post">
+    <form class="form-horizontal" role="form" name="changepw" action="/changepw" method="post">
 
       <div class="form-group">
-        <label>Old Password</label>
-        <input class="form-control" type="password" name="oldpw" autofocus>
+        <label class="col-sm-4 control-label">Old Password</label>
+        <div class="col-sm-8">
+          <input class="form-control" type="password" name="oldpw" autofocus>
+        </div>
       </div>
 
       <div class="form-group">
-        <label>New Password</label>
-        <input class="form-control" type="password" name="newpw1">
+        <label class="col-sm-4 control-label">New Password</label>
+        <div class="col-sm-8">
+          <input class="form-control" type="password" name="newpw1">
+        </div>
       </div>
 
       <div class="form-group">
-        <label>Confirm New Password</label>
-        <input class="form-control" type="password" name="newpw2">
+        <label class="col-sm-4 control-label">Confirm New Password</label>
+        <div class="col-sm-8">
+          <input class="form-control" type="password" name="newpw2">
+        </div>
       </div>
 
       <button type="submit" class="btn btn-default">Change Password</button>
