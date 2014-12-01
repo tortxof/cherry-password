@@ -71,6 +71,7 @@ html_template = '''\
                 <li><a href="/all">Show All Records</a></li>
                 <li><a href="/import">Import</a></li>
                 <li><a href="/export">Export</a></li>
+                <li><a href="/changepw">Change Master Password</a></li>
                 <li class="divider"></li>
                 <li><a href="/genpass">Generate Password</a></li>
               </ul>
@@ -741,7 +742,7 @@ class Root(object):
         if not loggedIn():
             out += html_message.format(message='You are not logged in.') + html_login
         elif not password:
-            out += html_message.format(message='Change your master password.')
+            out += html_message.format(message='Change your master password. You may want to export your data first, just in case.')
             out += html_changemasterpassform
         else:
             aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
