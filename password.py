@@ -300,7 +300,7 @@ html_results = """\
   </div>
   <div class="panel-footer">
     <a href="/delete?rowid={rowid}"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
-    <span style="display:inline-block;width:2em;" aria-hidden="true"></span>
+    <span style="display:inline-block;width:1em;" aria-hidden="true"></span>
     <a href="/edit?rowid={rowid}"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
   </div>
 </div>
