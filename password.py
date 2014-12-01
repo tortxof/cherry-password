@@ -390,6 +390,21 @@ def decrypt(key, data):
     cipher = AES.new(key, AES.MODE_CFB, iv)
     return cipher.decrypt(data)[AES.block_size:]
 
+def getMasterPass(appuser):
+    '''Returns pwHash and salt for appuser.'''
+    conn = sqlite3.connect(pwdatabase)
+    pwHash, salt = conn.execute('select password, salt from master_pass where appuser=?', (appuser,)).fetchone()
+    conn.close()
+    return pwHash, salt
+
+def passwordValid(appuser, password):
+    '''Check if master pass is valid.'''
+    pwHash, salt = getMasterPass(appuser)
+    if bcrypt.checkpw(password, pwHash):
+        return True
+    else:
+        return False
+
 def loggedIn():
     '''Checks if current auth cookie is valid.'''
     cookie = cherrypy.request.cookie
@@ -626,16 +641,18 @@ class Root(object):
 
     def login(self, user='', password=''):
         out = ''
-        conn = sqlite3.connect(pwdatabase)
-        master_pass = conn.execute('select * from master_pass where appuser=?', (user,)).fetchone()
-        conn.close()
-        pwHash = master_pass[1]
-        salt = master_pass[2]
-        if bcrypt.checkpw(password, pwHash):
+        if user:
+            pwHash, salt = getMasterPass(user)
+        else:
+            out += html_message.format(message='You must supply your username.')
+            out += html_login
+            return html_template.format(content=out)
+        if passwordValid(user, password):
             cookie = cherrypy.response.cookie
             cookie['auth'] = newKey(user)
             cookie['aes_key'] = toHex(bcrypt.kdf(password, salt, 16, 32))
-            out += html_message.format(message='You are now logged in.') + html_searchform + html_addform
+            out += html_message.format(message='You are now logged in.')
+            out += html_searchform + html_addform
         else:
             failedLogin()
             out += html_message.format(message='Login failed.') + html_login
