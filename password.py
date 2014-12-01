@@ -575,12 +575,14 @@ class Root(object):
         if (not password) or (not user):
             out += html_message.format(message='Create a new user.')
             out += html_newuserform
-            return html_template.format(content=out)
+        elif existsAppUser(user):
+            out += html_message.format(message='That user already exists.')
+            out += html_newuserform
         else:
             newAppUser(user, password)
-            out += html_message.format(message='New database has been created.')
+            out += html_message.format(message='New user has been created.')
             out += html_login
-            return html_template.format(content=out)
+        return html_template.format(content=out)
     newuser.exposed = True
 
     def genpass(self):
