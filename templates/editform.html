@@ -1,0 +1,50 @@
+<div class="panel panel-default">
+  <div class="panel-heading">Edit Record</div>
+  <div class="panel-body">
+
+    <form class="form-horizontal" role="form" name="edit" action="/edit" method="post">
+
+      <input type="hidden" name="rowid" value="{rowid}">
+      <input type="hidden" name="confirm" value="true">
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Title:</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" name="title" value="{title}">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">URL:</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" name="url" value="{url}">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Username:</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" name="username" value="{username}">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Password:</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" name="password" value="{password}">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="col-sm-3 control-label">Other:</label>
+        <div class="col-sm-9">
+          <textarea class="form-control" name="other">{other}</textarea>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-default">Submit</button>
+
+    </form>
+
+  </div>
+</div>
