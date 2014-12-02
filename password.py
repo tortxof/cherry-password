@@ -105,11 +105,11 @@ def nowUnixInt():
     '''Return int unix time.'''
     return int(time.time())
 
-def newKey(user):
-    '''Creates new key, adds it to database with timestamp, and returns it.'''
+def newKey(appuser, aes_key):
+    '''Creates new key, adds it to authKeys with timestamp, and returns it.'''
     key = genHex()
     date = nowUnixInt()
-    authKeys[key] = (user, date)
+    authKeys[key] = {'appuser': appuser, 'aes_key': aes_key, 'date': date}
     return key
 
 def delKey(key):
@@ -120,22 +120,23 @@ def delKey(key):
     return False
 
 def keyUser(key):
-    '''Return appuser for given key.'''
+    '''Return appuser and aes_key for given auth key.'''
     if key in authKeys:
-        return authKeys[key][0]
+        return authKeys[key]['appuser'], authKeys[key]['aes_key']
 
 def keyValid(key):
-    '''Return True if key is in database and is not expired. Updates timestamp if key is valid.'''
+    '''Return True if key is in authKeys and is not expired. Updates date if key is valid.'''
     now = nowUnixInt()
     exp_date = now - keyExpTime
     keys = [key for key in authKeys.keys()]
-    for i in keys:
-        if authKeys[i][1] < exp_date:
-          del authKeys[i]
+    for key in keys:
+        if authKeys[key]['date'] < exp_date:
+          del authKeys[key]
     if key not in authKeys:
         return False
-    authKeys[key] = (keyUser(key), now)
-    return True
+    else:
+        authKeys[key]['date'] = now
+        return True
 
 def pwSearch(query, appuser, aes_key):
     '''Returns results of search.'''
@@ -313,9 +314,9 @@ class Root(object):
             out += html['login']
             return html['template'].format(content=out)
         if salt and passwordValid(user, password):
+            aes_key = bcrypt.kdf(password, salt, 16, 32)
             cookie = cherrypy.response.cookie
-            cookie['auth'] = newKey(user)
-            cookie['aes_key'] = toHex(bcrypt.kdf(password, salt, 16, 32))
+            cookie['auth'] = newKey(user, aes_key)
             out += html['message'].format(message='You are now logged in.')
             out += html['searchform'] + html['addform']
         else:
@@ -344,8 +345,7 @@ class Root(object):
         if not loggedIn():
             out += html['message'].format(message='You are not logged in.') + html['login']
         else:
-            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
-            appuser = keyUser(cherrypy.request.cookie['auth'].value)
+            appuser, aes_key = keyUser(cherrypy.request.cookie['auth'].value)
             out += getAll(appuser, aes_key)
         return html['template'].format(content=out)
 
@@ -354,8 +354,7 @@ class Root(object):
         if not loggedIn():
             out += html['message'].format(message='You are not logged in.') + html['login']
         else:
-            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
-            appuser = keyUser(cherrypy.request.cookie['auth'].value)
+            appuser, aes_key = keyUser(cherrypy.request.cookie['auth'].value)
             out += html['searchform'] + pwSearch(query, appuser, aes_key)
         return html['template'].format(content=out)
     search.exposed = True
@@ -365,8 +364,7 @@ class Root(object):
         if not loggedIn():
             out += html['message'].format(message='You are not logged in.') + html['login']
         else:
-            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
-            appuser = keyUser(cherrypy.request.cookie['auth'].value)
+            appuser, aes_key = keyUser(cherrypy.request.cookie['auth'].value)
             password = encrypt(aes_key, mkPasswd())
             other = encrypt(aes_key, other)
             newrecord = (title, url, username, password, other, appuser)
@@ -387,8 +385,7 @@ class Root(object):
         if not loggedIn():
             out += html['message'].format(message='You are not logged in.') + html['login']
         else:
-            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
-            appuser = keyUser(cherrypy.request.cookie['auth'].value)
+            appuser, aes_key = keyUser(cherrypy.request.cookie['auth'].value)
             if confirm == 'true':
                 out += html['message'].format(message="Record deleted.")
                 out += getById(rowid, appuser, aes_key)
@@ -405,8 +402,7 @@ class Root(object):
         if not loggedIn():
             out += html['message'].format(message='You are not logged in.') + html['login']
         else:
-            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
-            appuser = keyUser(cherrypy.request.cookie['auth'].value)
+            appuser, aes_key = keyUser(cherrypy.request.cookie['auth'].value)
             if confirm == 'true':
                 record = (title, url, username, password, other)
                 updateById(rowid, appuser, aes_key, record)
@@ -427,9 +423,8 @@ class Root(object):
             out += html['message'].format(message='Change your master password. You may want to export your data first, just in case.')
             out += html['changemasterpassform']
         else:
-            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
             auth = cherrypy.request.cookie['auth'].value
-            appuser = keyUser(auth)
+            appuser, aes_key = keyUser(auth)
             if passwordValid(appuser, oldpw) and (newpw1 == newpw2) and (newpw1 != ''):
                 changeMasterPass(appuser, aes_key, newpw1)
                 delKey(auth)
@@ -449,8 +444,7 @@ class Root(object):
             out += html['message'].format(message='Enter json data to import.')
             out += html['importform']
         else:
-            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
-            appuser = keyUser(cherrypy.request.cookie['auth'].value)
+            appuser, aes_key = keyUser(cherrypy.request.cookie['auth'].value)
             importJson(appuser, aes_key, json)
             out += html['message'].format(message='Json data imported.')
         return html['template'].format(content=out)
@@ -461,8 +455,7 @@ class Root(object):
             out = html['message'].format(message='You are not logged in.') + html['login']
             return html['template'].format(content=out)
         else:
-            aes_key = fromHex(cherrypy.request.cookie['aes_key'].value)
-            appuser = keyUser(cherrypy.request.cookie['auth'].value)
+            appuser, aes_key = keyUser(cherrypy.request.cookie['auth'].value)
             return json.dumps(getAllValues(appuser, aes_key), indent=2)
 
     @cherrypy.expose()
