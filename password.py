@@ -465,5 +465,11 @@ class Root(object):
             appuser = keyUser(cherrypy.request.cookie['auth'].value)
             return json.dumps(getAllValues(appuser, aes_key), indent=2)
 
+    @cherrypy.expose()
+    def about(self):
+        version = subprocess.check_output(['git','rev-parse','--short','head']).decode().strip()
+        out = html['about'].format(version=version)
+        return html['template'].format(content=out)
+
 if __name__ == "__main__":
     cherrypy.quickstart(Root(), '/', 'app.conf')
