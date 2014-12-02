@@ -467,7 +467,7 @@ class Root(object):
 
     @cherrypy.expose()
     def about(self):
-        version = subprocess.check_output(['git','rev-parse','--short','head']).decode().strip()
+        version = subprocess.check_output(['git','rev-parse','--short','HEAD']).decode().strip()
         out = html['about'].format(version=version)
         return html['template'].format(content=out)
 
