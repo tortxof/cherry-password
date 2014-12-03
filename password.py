@@ -3,6 +3,7 @@
 import sqlite3
 import subprocess
 import os
+import random
 import bcrypt
 import hashlib
 from Crypto.Cipher import AES
@@ -219,9 +220,9 @@ def showResult(result, aes_key):
         out += html['results'].format(headers=headers,title=row[0],url=row[1],username=row[2],password=decrypt(aes_key, row[3]).decode(),other=decrypt(aes_key, row[4]).decode(),rowid=row[6])
     return out
 
-def mkPasswd():
+def mkPasswd(num=1):
     '''Returns generated password from pwgen command line utility.'''
-    return subprocess.check_output(['pwgen','-cn','12','1']).decode().strip()
+    return subprocess.check_output(['pwgen','-cn','12',str(num)]).decode().strip()
 
 def importJson(appuser, aes_key, json_data):
     records = json.loads(json_data)
@@ -302,7 +303,22 @@ class Root(object):
     newuser.exposed = True
 
     def genpass(self):
-        return html['template'].format(content=html['message'].format(message=mkPasswd()))
+        sysRnd = random.SystemRandom()
+        pins = []
+        for i in range(96):
+            pin = ''
+            for j in range(4):
+                pin += str(sysRnd.randrange(10))
+            pins.append(pin)
+        passwords = mkPasswd(num=96).split()
+        html_pins = ''
+        for pin in pins:
+            html_pins += '<samp>' + pin + '</samp> '
+        html_passwords = ''
+        for password in passwords:
+            html_passwords += '<samp>' + password + '</samp> '
+        out = html['genpass'].format(pins=html_pins, passwords=html_passwords)
+        return html['template'].format(content=out)
     genpass.exposed = True
 
     def login(self, user='', password=''):
