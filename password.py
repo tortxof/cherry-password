@@ -375,7 +375,7 @@ class Root(object):
         return html['template'].format(content=out)
     search.exposed = True
 
-    def add(self, title, url='', username='', other=''):
+    def add(self, title='', url='', username='', other=''):
         out = ''
         if not loggedIn():
             out += html['message'].format(message='You are not logged in.') + html['login']
