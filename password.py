@@ -302,6 +302,14 @@ class Root(object):
         return html['template'].format(content=out)
     newuser.exposed = True
 
+    @cherrypy.expose()
+    @cherrypy.tools.json_out()
+    def userexists(self, user):
+        if existsAppUser(user):
+            return {'exists': True}
+        else:
+            return {'exists': False}
+
     def genpass(self):
         sysRnd = random.SystemRandom()
         pins = []
