@@ -14,6 +14,7 @@ class PasswordEncryption(unittest.TestCase):
         self.aes_key = b'\xa9+BYT\x045\xe1\xf8\x90\xf6\xfe\xa1\xf5\x05\xd1'
 
     def test_key_derivation(self):
+        '''Test that key derivation gives known output with known input.'''
         aes_key = cherryPassword.kdf(self.password, self.salt)
         self.assertEqual(self.aes_key, aes_key)
 
