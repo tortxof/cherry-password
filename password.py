@@ -53,6 +53,9 @@ def decrypt(key, data):
     cipher = AES.new(key, AES.MODE_CFB, iv)
     return cipher.decrypt(data)[AES.block_size:]
 
+def kdf(password, salt):
+    return bcrypt.kdf(password, salt, 16, 32)
+
 def getMasterPass(appuser):
     '''Returns pwHash and salt for appuser.'''
     conn = sqlite3.connect(pwdatabase)
@@ -201,7 +204,7 @@ def changeMasterPass(appuser, aes_key, newPass):
     '''Change users master password. '''
     newPWHash = bcrypt.hashpw(newPass, bcrypt.gensalt())
     newSalt = os.urandom(16)
-    new_aes_key = bcrypt.kdf(newPass, newSalt, 16, 32)
+    new_aes_key = kdf(newPass, newSalt)
     conn = sqlite3.connect(pwdatabase)
     rowids = [i[0] for i in conn.execute('select rowid from passwords where appuser=?', (appuser,)).fetchall()]
     for rowid in rowids:
@@ -338,7 +341,7 @@ class Root(object):
             out += html['login']
             return html['template'].format(content=out)
         if salt and passwordValid(user, password):
-            aes_key = bcrypt.kdf(password, salt, 16, 32)
+            aes_key = kdf(password, salt)
             cookie = cherrypy.response.cookie
             cookie['auth'] = newKey(user, aes_key)
             out += html['message'].format(message='You are now logged in.')
