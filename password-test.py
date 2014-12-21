@@ -21,12 +21,12 @@ class PasswordEncryption(unittest.TestCase):
     def test_round_trip_encryption(self):
         '''Encryption followed by decryption should return back our original input.'''
         ciphertext = cherryPassword.encrypt(self.aes_key, self.plaintext)
-        decrypted_plaintext = cherryPassword.decrypt(self.aes_key, ciphertext).decode()
+        decrypted_plaintext = cherryPassword.decrypt(self.aes_key, ciphertext)
         self.assertEqual(self.plaintext, decrypted_plaintext)
 
     def test_known_ciphertext(self):
         '''Test decryption of known ciphertext.'''
-        decrypted_plaintext = cherryPassword.decrypt(self.aes_key, self.ciphertext).decode()
+        decrypted_plaintext = cherryPassword.decrypt(self.aes_key, self.ciphertext)
         self.assertEqual(self.plaintext, decrypted_plaintext)
 
     def test_bad_plaintext_input(self):

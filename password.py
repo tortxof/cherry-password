@@ -51,7 +51,7 @@ def decrypt(key, data):
     key = hashlib.sha256(key).digest()[:AES.block_size]
     iv = os.urandom(AES.block_size)
     cipher = AES.new(key, AES.MODE_CFB, iv)
-    return cipher.decrypt(data)[AES.block_size:]
+    return cipher.decrypt(data)[AES.block_size:].decode()
 
 def kdf(password, salt):
     return bcrypt.kdf(password, salt, 16, 32)
@@ -162,8 +162,8 @@ def getValuesById(rowid, appuser, aes_key):
     record = conn.execute('select *,rowid from passwords where rowid=? and appuser=?', (rowid, appuser)).fetchone()
     conn.close()
     record = list(record)
-    record[3] = decrypt(aes_key, record[3]).decode()
-    record[4] = decrypt(aes_key, record[4]).decode()
+    record[3] = decrypt(aes_key, record[3])
+    record[4] = decrypt(aes_key, record[4])
     return record
 
 def getAll(appuser, aes_key):
@@ -179,8 +179,8 @@ def getAllValues(appuser, aes_key):
     records = [list(i) for i in conn.execute('select title, url, username, password, other from passwords where appuser=?', (appuser,))]
     conn.close()
     for i in range(len(records)):
-        records[i][3] = decrypt(aes_key, records[i][3]).decode()
-        records[i][4] = decrypt(aes_key, records[i][4]).decode()
+        records[i][3] = decrypt(aes_key, records[i][3])
+        records[i][4] = decrypt(aes_key, records[i][4])
     return records
 
 def deleteById(rowid, appuser):
@@ -220,7 +220,7 @@ def showResult(result, aes_key):
     '''Renders given results.'''
     out = ''
     for row in result:
-        out += html['results'].format(headers=headers,title=row[0],url=row[1],username=row[2],password=decrypt(aes_key, row[3]).decode(),other=decrypt(aes_key, row[4]).decode(),rowid=row[6])
+        out += html['results'].format(headers=headers,title=row[0],url=row[1],username=row[2],password=decrypt(aes_key, row[3]),other=decrypt(aes_key, row[4]),rowid=row[6])
     return out
 
 def mkPasswd(num=1):
