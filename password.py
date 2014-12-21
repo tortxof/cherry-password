@@ -484,7 +484,8 @@ class Root(object):
             return html['template'].format(content=out)
         else:
             appuser, aes_key = keyUser(cherrypy.request.cookie['auth'].value)
-            return json.dumps(getAllValues(appuser, aes_key), indent=2)
+            cherrypy.response.headers['Content-Type'] = 'application/json'
+            return json.dumps(getAllValues(appuser, aes_key), indent=2).encode()
 
     @cherrypy.expose()
     def about(self):
