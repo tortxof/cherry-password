@@ -54,6 +54,7 @@ def decrypt(key, data):
     return cipher.decrypt(data)[AES.block_size:].decode()
 
 def kdf(password, salt):
+    '''Generate aes key from password and salt.'''
     return bcrypt.kdf(password, salt, 16, 32)
 
 def getMasterPass(appuser):
