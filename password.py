@@ -112,6 +112,7 @@ def nowUnixInt():
 
 def newKey(appuser, aes_key):
     '''Creates new key, adds it to authKeys with timestamp, and returns it.'''
+    global authKeys
     key = genHex()
     date = nowUnixInt()
     authKeys[key] = {'appuser': appuser, 'aes_key': aes_key, 'date': date}
@@ -119,6 +120,7 @@ def newKey(appuser, aes_key):
 
 def delKey(key):
     '''Removes auth key. Used for logout.'''
+    global authKeys
     if key in authKeys:
         del authKeys[key]
         return True
@@ -126,11 +128,13 @@ def delKey(key):
 
 def keyUser(key):
     '''Return appuser and aes_key for given auth key.'''
+    global authKeys
     if key in authKeys:
         return authKeys[key]['appuser'], authKeys[key]['aes_key']
 
 def keyValid(key):
     '''Return True if key is in authKeys and is not expired. Updates date if key is valid.'''
+    global authKeys
     now = nowUnixInt()
     exp_date = now - keyExpTime
     keys = [key for key in authKeys.keys()]
