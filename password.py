@@ -143,11 +143,11 @@ def keyValid(key):
     for key in keys:
         if authKeys[key]['date'] < exp_date:
           del authKeys[key]
-    if key not in authKeys:
-        return False
-    else:
+    if key in authKeys:
         authKeys[key]['date'] = now
         return True
+    else:
+        return False
 
 def pwSearch(query, appuser, aes_key):
     '''Returns results of search.'''
