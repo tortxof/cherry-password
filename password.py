@@ -77,10 +77,8 @@ def passwordValid(appuser, password):
 
 def loggedIn():
     '''Checks if current auth cookie is valid.'''
-    print(authKeys)
     cookie = cherrypy.request.cookie
     if 'auth' in cookie.keys():
-        print(cookie['auth'].value)
         if keyValid(cookie['auth'].value):
             return True
     return False
@@ -144,7 +142,6 @@ def keyValid(key):
         if authKeys[i]['date'] < exp_date:
           del authKeys[i]
     if key in authKeys:
-        print(key + ' is in authKeys')
         authKeys[key]['date'] = now
         return True
     else:
