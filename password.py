@@ -144,6 +144,7 @@ def keyValid(key):
         if authKeys[key]['date'] < exp_date:
           del authKeys[key]
     if key in authKeys:
+        print(key + ' is in authKeys')
         authKeys[key]['date'] = now
         return True
     else:
