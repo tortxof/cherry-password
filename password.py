@@ -79,6 +79,7 @@ def loggedIn():
     '''Checks if current auth cookie is valid.'''
     print(authKeys)
     cookie = cherrypy.request.cookie
+    print(cookie['auth'].value)
     if 'auth' in cookie.keys():
         if keyValid(cookie['auth'].value):
             return True
