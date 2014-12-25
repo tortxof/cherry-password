@@ -140,7 +140,7 @@ def keyValid(key):
     keys = [i for i in authKeys.keys()]
     for i in keys:
         if authKeys[i]['date'] < exp_date:
-          del authKeys[i]
+            del authKeys[i]
     if key in authKeys:
         authKeys[key]['date'] = now
         return True
