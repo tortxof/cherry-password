@@ -139,10 +139,10 @@ def keyValid(key):
     global authKeys
     now = nowUnixInt()
     exp_date = now - keyExpTime
-    keys = [key for key in authKeys.keys()]
-    for key in keys:
-        if authKeys[key]['date'] < exp_date:
-          del authKeys[key]
+    keys = [i for i in authKeys.keys()]
+    for i in keys:
+        if authKeys[i]['date'] < exp_date:
+          del authKeys[i]
     if key in authKeys:
         print(key + ' is in authKeys')
         authKeys[key]['date'] = now
