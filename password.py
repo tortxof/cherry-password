@@ -15,16 +15,52 @@ import time
 pwdatabase = 'passwords.db'
 # pwdatabase = ':memory:'
 
-authKeys = dict()
+class AuthKeys(object):
+    def __init__(self):
+        self.keys = dict()
+        self.keyExpTime = 60 * 15
+
+    def add(self, appuser, aes_key):
+        key = genHex()
+        date = nowUnixInt()
+        self.keys[key] = {'appuser': appuser, 'aes_key': aes_key, 'date': date}
+        return key
+
+    def delete(self, key):
+        if key in self.keys:
+            del self.keys[key]
+            return True
+        else:
+            return False
+
+    def valid(self, key):
+        now = self.expire()
+        if key in self.keys:
+            self.keys[key]['date'] = now
+            return True
+        else:
+            return False
+
+    def user(self, key):
+        if key in self.keys:
+            return self.keys[key]['appuser'], self.keys[key]['aes_key']
+
+    def expire(self):
+        now = nowUnixInt()
+        exp_date = now - self.keyExpTime
+        keys = list(self.keys.keys())
+        for key in keys:
+            if self.keys[i]['date'] < exp_date:
+                del self.keys[i]
+        return now
+
+auth_keys = AuthKeys()
 
 login_attempts = []
 login_attempt_window = 60 * 5
 login_attempts_allowed = 3
 
 cherrypy.config.update('server.conf')
-
-# Set key expiration time in seconds
-keyExpTime = 60 * 15
 
 template_dir = 'templates'
 templates = [template.split('.html')[0] for template in os.listdir(path=template_dir)]
@@ -79,7 +115,7 @@ def loggedIn():
     '''Checks if current auth cookie is valid.'''
     cookie = cherrypy.request.cookie
     if 'auth' in cookie.keys():
-        if keyValid(cookie['auth'].value):
+        if auth_keys.valid(cookie['auth'].value):
             return True
     return False
 
@@ -109,43 +145,6 @@ def genHex(length=32):
 def nowUnixInt():
     '''Return int unix time.'''
     return int(time.time())
-
-def newKey(appuser, aes_key):
-    '''Creates new key, adds it to authKeys with timestamp, and returns it.'''
-    global authKeys
-    key = genHex()
-    date = nowUnixInt()
-    authKeys[key] = {'appuser': appuser, 'aes_key': aes_key, 'date': date}
-    return key
-
-def delKey(key):
-    '''Removes auth key. Used for logout.'''
-    global authKeys
-    if key in authKeys:
-        del authKeys[key]
-        return True
-    return False
-
-def keyUser(key):
-    '''Return appuser and aes_key for given auth key.'''
-    global authKeys
-    if key in authKeys:
-        return authKeys[key]['appuser'], authKeys[key]['aes_key']
-
-def keyValid(key):
-    '''Return True if key is in authKeys and is not expired. Updates date if key is valid.'''
-    global authKeys
-    now = nowUnixInt()
-    exp_date = now - keyExpTime
-    keys = [i for i in authKeys.keys()]
-    for i in keys:
-        if authKeys[i]['date'] < exp_date:
-            del authKeys[i]
-    if key in authKeys:
-        authKeys[key]['date'] = now
-        return True
-    else:
-        return False
 
 def pwSearch(query, appuser, aes_key):
     '''Returns results of search.'''
@@ -348,7 +347,7 @@ class Root(object):
         if salt and passwordValid(user, password):
             aes_key = kdf(password, salt)
             cookie = cherrypy.response.cookie
-            cookie['auth'] = newKey(user, aes_key)
+            cookie['auth'] = auth_keys.add(user, aes_key)
             out += html['message'].format(message='You are now logged in.')
             out += html['searchform'] + html['addform']
         else:
@@ -361,7 +360,7 @@ class Root(object):
         out = ''
         cookie = cherrypy.request.cookie
         if 'auth' in cookie.keys():
-            if delKey(cookie['auth'].value):
+            if auth_keys.delete(cookie['auth'].value):
                 out += html['message'].format(message='You are now logged out.')
             else:
                 out += html['message'].format(message='Auth key not found.')
@@ -377,7 +376,7 @@ class Root(object):
         if not loggedIn():
             out += html['message'].format(message='You are not logged in.') + html['login']
         else:
-            appuser, aes_key = keyUser(cherrypy.request.cookie['auth'].value)
+            appuser, aes_key = auth_keys.user(cherrypy.request.cookie['auth'].value)
             out += getAll(appuser, aes_key)
         return html['template'].format(content=out)
 
@@ -386,7 +385,7 @@ class Root(object):
         if not loggedIn():
             out += html['message'].format(message='You are not logged in.') + html['login']
         else:
-            appuser, aes_key = keyUser(cherrypy.request.cookie['auth'].value)
+            appuser, aes_key = auth_keys.user(cherrypy.request.cookie['auth'].value)
             out += html['searchform'] + pwSearch(query, appuser, aes_key)
         return html['template'].format(content=out)
     search.exposed = True
@@ -396,7 +395,7 @@ class Root(object):
         if not loggedIn():
             out += html['message'].format(message='You are not logged in.') + html['login']
         else:
-            appuser, aes_key = keyUser(cherrypy.request.cookie['auth'].value)
+            appuser, aes_key = auth_keys.user(cherrypy.request.cookie['auth'].value)
             password = encrypt(aes_key, mkPasswd())
             other = encrypt(aes_key, other)
             newrecord = (title, url, username, password, other, appuser)
@@ -417,7 +416,7 @@ class Root(object):
         if not loggedIn():
             out += html['message'].format(message='You are not logged in.') + html['login']
         else:
-            appuser, aes_key = keyUser(cherrypy.request.cookie['auth'].value)
+            appuser, aes_key = auth_keys.user(cherrypy.request.cookie['auth'].value)
             if confirm == 'true':
                 out += html['message'].format(message="Record deleted.")
                 out += getById(rowid, appuser, aes_key)
@@ -434,7 +433,7 @@ class Root(object):
         if not loggedIn():
             out += html['message'].format(message='You are not logged in.') + html['login']
         else:
-            appuser, aes_key = keyUser(cherrypy.request.cookie['auth'].value)
+            appuser, aes_key = auth_keys.user(cherrypy.request.cookie['auth'].value)
             if confirm == 'true':
                 record = (title, url, username, password, other)
                 updateById(rowid, appuser, aes_key, record)
@@ -456,10 +455,10 @@ class Root(object):
             out += html['changemasterpassform']
         else:
             auth = cherrypy.request.cookie['auth'].value
-            appuser, aes_key = keyUser(auth)
+            appuser, aes_key = auth_keys.user(auth)
             if passwordValid(appuser, oldpw) and (newpw1 == newpw2) and (newpw1 != ''):
                 changeMasterPass(appuser, aes_key, newpw1)
-                delKey(auth)
+                auth_keys.delete(auth)
                 out += html['message'].format(message='Your master password has been changed. Please log back in.')
                 out += html['login']
             else:
@@ -476,7 +475,7 @@ class Root(object):
             out += html['message'].format(message='Enter json data to import.')
             out += html['importform']
         else:
-            appuser, aes_key = keyUser(cherrypy.request.cookie['auth'].value)
+            appuser, aes_key = auth_keys.user(cherrypy.request.cookie['auth'].value)
             importJson(appuser, aes_key, json)
             out += html['message'].format(message='Json data imported.')
         return html['template'].format(content=out)
@@ -487,7 +486,7 @@ class Root(object):
             out = html['message'].format(message='You are not logged in.') + html['login']
             return html['template'].format(content=out)
         else:
-            appuser, aes_key = keyUser(cherrypy.request.cookie['auth'].value)
+            appuser, aes_key = auth_keys.user(cherrypy.request.cookie['auth'].value)
             cherrypy.response.headers['Content-Type'] = 'application/json'
             return json.dumps(getAllValues(appuser, aes_key), indent=2).encode()
 
