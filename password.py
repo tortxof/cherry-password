@@ -50,8 +50,8 @@ class AuthKeys(object):
         exp_date = now - self.keyExpTime
         keys = list(self.keys.keys())
         for key in keys:
-            if self.keys[i]['date'] < exp_date:
-                del self.keys[i]
+            if self.keys[key]['date'] < exp_date:
+                del self.keys[key]
         return now
 
 auth_keys = AuthKeys()
